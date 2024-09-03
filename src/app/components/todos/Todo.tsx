@@ -26,10 +26,6 @@ const Todo = ({todo}: { todo: taskProps }) => {
         : 'to old '; // Fallback to an empty string or any default value you prefer
 
     return (
-
-
-
-
             <tr className={`flex justify-between text-white `}
                 style={todoStyle}
             >
