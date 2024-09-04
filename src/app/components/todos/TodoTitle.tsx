@@ -8,7 +8,7 @@ import {taskProps} from "@/app/types/types";
 import * as actions from "@/actions/actions"
 
 
-const EditTodo = ({todo}: { todo: taskProps }) => {
+const TodoTitle = ({todo}: { todo: taskProps }) => {
     const [editTodoState, setEditTodoState] = useState(false);
 
     const handleEdit = () => {
@@ -24,17 +24,17 @@ const EditTodo = ({todo}: { todo: taskProps }) => {
 
     return (
         <>
-            <div className=" flex gap-5 items-center">
-                <Button onClick={handleEdit} text={<MdEdit/>} actionButton bgColor="bg-blue-500"/>
+
+            <div className=" flex gap-5 items-center justify-center">{todo.title}
+                <Button onClick={handleEdit} text={<MdEdit/>} bgColor="bg-blue-500" actionButton/>
                 {editTodoState ? (
                     <Form action={actions.editTodo} onSubmit={handleSubmit}>
                         <Input name="inputId" value={todo.id} type="hidden"/>
                         <div className="flex justify-center">
                             <Input
                                 name="newTitle"
-                                placeholder="Edit Todo..."
+                                placeholder={todo.title}
                                 type="text">
-
                             </Input>
                             <Button type="submit" text="Save" bgColor="bg-blue-500"></Button>
                         </div>
@@ -44,7 +44,7 @@ const EditTodo = ({todo}: { todo: taskProps }) => {
         </>
     )
 }
-export default EditTodo
+export default TodoTitle
 
 
 

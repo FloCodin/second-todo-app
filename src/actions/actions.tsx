@@ -62,17 +62,12 @@ export async function deleteTodo (formdata: FormData){
 
 export async function changePriority(formData: FormData): Promise<void> {
     const inputId: string = formData.get("inputId") as string;
-    const task = await prisma.task.findUnique({
-        where: {
-            id: inputId,
-        },
-    }) as Task | null; // Typen explizit setzen
+    const newPriority: number = parseInt(formData.get("prioritys") as string, 10);
 
-    if (!task) {
+    if (isNaN(newPriority) || newPriority < 1 || newPriority > 3) {
+        console.error("Invalid priority value");
         return;
     }
-
-    const newPriority = task.priority < 3 ? task.priority + 1 : 1;
 
     await prisma.task.update({
         where: {

@@ -30,7 +30,7 @@ export default async function Home() {
         <div className="flex justify-center flex-col items-center mt-24">
 
             <AddTodo/>
-            <div className="flex-colflex gap-2 justify-center mt-5 w-screen ">
+            <div className="flex-col flex gap-2 justify-center mt-5 w-screen ">
                 {data.map((item) => {
                     const todo: taskProps = {
                         id: item.id,

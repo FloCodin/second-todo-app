@@ -5,7 +5,7 @@ import *as action from "@/actions/actions"
 import {taskProps} from "@/app/types/types";
 import {FaCheck} from "react-icons/fa";
 
-const ChangeTodo = ({todo}: { todo: taskProps }) => {
+const CompleteTodo = ({todo}: { todo: taskProps }) => {
     return (
         <Form action={action.changeStatus}>
             <Input name="inputId" value={todo.id} type="hidden"></Input>
@@ -19,4 +19,4 @@ const ChangeTodo = ({todo}: { todo: taskProps }) => {
         </Form>
     )
 }
-export default ChangeTodo
+export default CompleteTodo
