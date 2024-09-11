@@ -2,11 +2,11 @@
 
 import {prisma} from "@/app/utils/prisma";
 import {revalidatePath} from "next/cache";
-import {Task} from '@prisma/client';
+import {Prisma} from '@prisma/client';
 
-export async function createTodo(formData: FormData){
+export async function createTodo(formData: FormData) {
     const input = formData.get('input') as string;
-    if (!input.trim()){
+    if (!input.trim()) {
         return;
     }
     await prisma.task.create({
@@ -17,8 +17,8 @@ export async function createTodo(formData: FormData){
     revalidatePath("/")
 }
 
-export async function changeStatus (formData: FormData){
-    const inputId= formData.get("inputId") as string
+export async function changeStatus(formData: FormData) {
+    const inputId = formData.get("inputId") as string
     const todo = await prisma.task.findUnique({
         where: {
             id: inputId,
@@ -29,14 +29,15 @@ export async function changeStatus (formData: FormData){
         where: {
             id: inputId
         },
-        data:{
+        data: {
             isCompleted: updateStatus
         }
     })
 
     revalidatePath("/")
 }
-export async function editTodo (formdata: FormData){
+
+export async function editTodo(formdata: FormData) {
     const newTitle = formdata.get("newTitle") as string;
     const inputId = formdata.get("inputId") as string;
 
@@ -44,16 +45,16 @@ export async function editTodo (formdata: FormData){
         where: {
             id: inputId
         },
-        data:{
+        data: {
             title: newTitle
         }
     })
-    revalidatePath("/")
 }
-export async function deleteTodo (formdata: FormData){
+
+export async function deleteTodo(formdata: FormData) {
     const inputId = formdata.get("inputId") as string;
     await prisma.task.delete({
-        where:{
+        where: {
             id: inputId
         }
     })
@@ -78,4 +79,27 @@ export async function changePriority(formData: FormData): Promise<void> {
         },
     });
     revalidatePath("/");
+}
+
+export async function getAllToDos(order: string) {
+    "use server"
+    const sortOrder = castSortOrder(order);
+    return prisma.task.findMany({
+        select: {
+            title: true,
+            id: true,
+            isCompleted: true,
+            createdAt: true,
+            priority: true,
+        },
+        orderBy: {
+            createdAt: sortOrder,
+        } as any
+    });
+
+  function castSortOrder(order: string): Prisma.SortOrder {
+    if (order === "asc") return Prisma.SortOrder.asc;
+    if (order === "desc") return Prisma.SortOrder.desc;
+    return Prisma.SortOrder.asc;
+}
 }

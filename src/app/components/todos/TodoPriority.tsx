@@ -1,12 +1,12 @@
 'use client'
 import React, {useEffect} from 'react';
 import Button from "@/app/components/button/Button";
-import { GiFlyingFlag } from "react-icons/gi";
+// import { GiFlyingFlag } from "react-icons/gi";
 import { taskProps } from "@/app/types/types";
 import {changePriority} from "@/actions/actions";
 import Form from "@/app/components/form/Form";
 import { useState } from 'react';
-import {event} from "next/dist/build/output/log";
+
 
 const TodoPriority = ({ todo }: { todo: taskProps }) => {
 

@@ -6,6 +6,7 @@ import Form from "@/app/components/form/Form";
 import Input from "@/app/components/inputField/Input";
 import {taskProps} from "@/app/types/types";
 import * as actions from "@/actions/actions"
+import {revalidatePath} from "next/cache";
 
 
 const TodoTitle = ({todo}: { todo: taskProps }) => {
