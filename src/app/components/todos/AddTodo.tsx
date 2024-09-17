@@ -4,13 +4,21 @@ import Input from "@/app/components/inputField/Input";
 import Button from "@/app/components/button/Button";
 import * as actions from "@/actions/actions";
 import React from "react";
-
+import useStore from "@/app/store";
 
 const AddTodo = () => {
+    const addTodo = useStore((state) => state.addTodo);
+
+    const handleSubmit = async (formData: FormData) => {
+        const newTodo = await actions.createTodo(formData);
+        if (newTodo) {
+            addTodo(newTodo);
+        }
+    };
 
     return (
         <div>
-            <Form action={actions.createTodo}>
+            <Form action={handleSubmit}>
                 <div className="flex flex-row gap-3">
                     <Input name="input" type="text" placeholder="Add Todo Here..."/>
                     <Button type="submit" text="Add" bgColor="bg-blue-600"/>
@@ -19,4 +27,5 @@ const AddTodo = () => {
         </div>
     );
 }
-export default AddTodo
+
+export default AddTodo;

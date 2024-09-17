@@ -1,13 +1,22 @@
+"use client"
 import Button from "@/app/components/button/Button";
 import Input from "@/app/components/inputField/Input";
 import Form from "@/app/components/form/Form";
-import *as action from "@/actions/actions"
+import * as action from "@/actions/actions";
 import {taskProps} from "@/app/types/types";
 import {FaCheck} from "react-icons/fa";
+import useStore from "@/app/store";
 
 const CompleteTodo = ({todo}: { todo: taskProps }) => {
+    const toggleTodo = useStore((state) => state.toggleTodo);
+
+    const handleSubmit = async (formData: FormData) => {
+        await action.changeStatus(formData);
+        toggleTodo(todo.id);
+    };
+
     return (
-        <Form action={action.changeStatus}>
+        <Form action={handleSubmit}>
             <Input name="inputId" value={todo.id} type="hidden"></Input>
             <Button
                 text={<FaCheck/>}
@@ -19,4 +28,5 @@ const CompleteTodo = ({todo}: { todo: taskProps }) => {
         </Form>
     )
 }
-export default CompleteTodo
+
+export default CompleteTodo;

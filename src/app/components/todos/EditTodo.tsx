@@ -6,10 +6,11 @@ import Form from "@/app/components/form/Form";
 import Input from "@/app/components/inputField/Input";
 import {taskProps} from "@/app/types/types";
 import * as actions from "@/actions/actions"
-
+import useStore from "@/app/store";
 
 const EditTodo = ({todo}: { todo: taskProps }) => {
     const [editTodoState, setEditTodoState] = useState(false);
+    const editTodo = useStore((state) => state.editTodo);
 
     const handleEdit = () => {
         if (todo.isCompleted){
@@ -18,8 +19,11 @@ const EditTodo = ({todo}: { todo: taskProps }) => {
         setEditTodoState(!editTodoState);
     };
 
-    const handleSubmit = () => {
-        setEditTodoState(!editTodoState)
+    const handleSubmit = async (formData: FormData) => {
+        const newTitle = formData.get("newTitle") as string;
+        await actions.editTodo(formData);
+        editTodo(todo.id, newTitle);
+        setEditTodoState(false);
     };
 
     return (
@@ -27,16 +31,16 @@ const EditTodo = ({todo}: { todo: taskProps }) => {
             <div className=" flex gap-5 items-center">
                 <Button onClick={handleEdit} text={<MdEdit/>} actionButton bgColor="bg-blue-500"/>
                 {editTodoState ? (
-                    <Form action={actions.editTodo} onSubmit={handleSubmit}>
+                    <Form action={handleSubmit}>
                         <Input name="inputId" value={todo.id} type="hidden"/>
                         <div className="flex justify-center">
                             <Input
                                 name="newTitle"
                                 placeholder="Edit Todo..."
-                                type="text">
-
-                            </Input>
-                            <Button type="submit" text="Save" bgColor="bg-blue-500"></Button>
+                                type="text"
+                                defaultValue={todo.title}
+                            />
+                            <Button type="submit" text="Save" bgColor="bg-blue-500"/>
                         </div>
                     </Form>
                 ) : null}
@@ -45,8 +49,3 @@ const EditTodo = ({todo}: { todo: taskProps }) => {
     )
 }
 export default EditTodo
-
-
-
-
-
