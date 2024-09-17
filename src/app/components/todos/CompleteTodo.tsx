@@ -10,10 +10,10 @@ import useStore from "@/app/store";
 const CompleteTodo = ({todo}: { todo: taskProps }) => {
     const toggleTodo = useStore((state) => state.toggleTodo);
 
-    const handleSubmit = async (formData: FormData) => {
+    const handleSubmit = async (formData: FormData)=>{
         await action.changeStatus(formData);
         toggleTodo(todo.id);
-    };
+    }
 
     return (
         <Form action={handleSubmit}>

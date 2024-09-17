@@ -31,13 +31,15 @@ const TodoTitle = ({ todo }: { todo: taskProps }) => {
             {todo.title}
             <Button onClick={handleEdit} text={<MdEdit />} bgColor="bg-blue-500" actionButton />
             {editTodoState ? (
-                <Form action={handleSubmit}>
+                <Form action={handleSubmit} >
                     <Input name="inputId" value={todo.id} type="hidden" />
                     <div className="flex justify-center">
                         <Input
                             name="newTitle"
-                            placeholder={todo.title}
                             type="text"
+                            placeholder={todo.title}
+                            required={true}
+
                         />
                         <Button type="submit" text="Save" bgColor="bg-blue-500" />
                     </div>

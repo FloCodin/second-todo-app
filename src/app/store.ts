@@ -13,7 +13,7 @@ interface TodoStore {
     changePriority: (id: string, newPriority: number) => void;
     fetchTodos: (order: string) => Promise<void>;
 }
-
+// set= en spezielli funktion vo zustand wo immer wieder aktualisiert, wird bi jedem uffruef neu grendert
 const useStore = create<TodoStore>((set) => ({
     todos: [],
     setTodos: (todos) => set({ todos }),
