@@ -7,7 +7,6 @@ import Input from "@/app/components/inputField/Input";
 import {taskProps} from "@/app/types/types";
 import * as actions from "@/actions/actions"
 import useStore from "@/app/store";
-import {updateTodoCombined} from "@/actions/actions";
 
 const EditTodo = ({todo}: { todo: taskProps }) => {
     const [editTodoState, setEditTodoState] = useState(false);

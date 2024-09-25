@@ -27,31 +27,25 @@ interface Task {
 }
 export async function updateTodoCombined(formData: FormData){
     const inputId = formData.get("inputId") as string
-
     const allTodos = await getAllToDos("asc", "createdAt");
     const todo = await prisma.task.findUnique({
         where: { id: inputId },
     }) as Task | null;
     const updateStatus = !prisma.task.fields ?.isCompleted;
-
     const newTitle = formData.get("newTitle") as string;
     const newPriority: number = parseInt(formData.get("prioritys") as string, 10);
-
     if (isNaN(newPriority) || newPriority < 1 || newPriority > 3) {
         console.error("Invalid priority value");
         return null;
     }
-
     const updateData: Partial<Task> = {
         isCompleted: !todo?.isCompleted,
         priority: newPriority,
         isPinned: !todo?.isPinned,
     };
-
     if (newTitle && newTitle.trim() !== "") {
         updateData.title = newTitle.trim();
     }
-
     const updatedTodo = await prisma.task.update({
         where: { id: inputId },
         data: updateData,

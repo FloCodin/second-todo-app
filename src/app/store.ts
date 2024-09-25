@@ -8,7 +8,7 @@ interface TodoStore {
     setTodos: (todos: taskProps[]) => void;
     addTodo: (todo: taskProps) => void;
     deleteTodo: (id: string) => void;
-    toggleTodo: (id: string) => void;
+    completeTodo: (id: string) => void;
     editTodo: (id: string, newTitle: string) => void;
     changePriority: (id: string, newPriority: number) => void;
     fetchTodos: (order: string, sortBy: string) => Promise<void>;
@@ -20,7 +20,7 @@ const useStore = create<TodoStore>((set) => ({
     setTodos: (todos) => set({ todos }),
     addTodo: (todo) => set((state) => ({ todos: [...state.todos, todo] })),
     deleteTodo: (id) => set((state) => ({ todos: state.todos.filter(todo => todo.id !== id) })),
-    toggleTodo: (id) => set((state) => ({
+    completeTodo: (id) => set((state) => ({
         todos: state.todos.map(todo =>
             todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
         )
