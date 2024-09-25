@@ -24,6 +24,7 @@ export interface taskProps {
     id: string;
     title?: string | null;
     isCompleted: boolean;
+    isPinned: boolean;
     createdAt?: Date;
     priority: number;
 }

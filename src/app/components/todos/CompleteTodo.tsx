@@ -6,12 +6,13 @@ import * as action from "@/actions/actions";
 import {taskProps} from "@/app/types/types";
 import {FaCheck} from "react-icons/fa";
 import useStore from "@/app/store";
+import {updateTodoCombined} from "@/actions/actions";
 
 const CompleteTodo = ({todo}: { todo: taskProps }) => {
     const toggleTodo = useStore((state) => state.toggleTodo);
 
     const handleSubmit = async (formData: FormData)=>{
-        await action.changeStatus(formData);
+        await action.updateTodoCombined(formData);
         toggleTodo(todo.id);
     }
 

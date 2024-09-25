@@ -1,7 +1,7 @@
 // app/store.ts
 import { create } from 'zustand'
 import { taskProps } from "@/app/types/types"
-import * as actions from "@/actions/actions"
+import { getAllToDos} from "@/actions/actions";
 
 interface TodoStore {
     todos: taskProps[];
@@ -11,9 +11,10 @@ interface TodoStore {
     toggleTodo: (id: string) => void;
     editTodo: (id: string, newTitle: string) => void;
     changePriority: (id: string, newPriority: number) => void;
-    fetchTodos: (order: string) => Promise<void>;
+    fetchTodos: (order: string, sortBy: string) => Promise<void>;
+    togglePinned: (isPinned: string) => void;
 }
-// set= en spezielli funktion vo zustand wo immer wieder aktualisiert, wird bi jedem uffruef neu grendert
+// set= en spezielli funktion vo zustand, wo immer wieder aktualisiert, wird bi jedem uffruef neu grendert
 const useStore = create<TodoStore>((set) => ({
     todos: [],
     setTodos: (todos) => set({ todos }),
@@ -30,14 +31,26 @@ const useStore = create<TodoStore>((set) => ({
         )
     })),
     changePriority: (id, newPriority) => set((state) => ({
+
         todos: state.todos.map(todo =>
             todo.id === id ? { ...todo, priority: newPriority } : todo
         )
+
     })),
-    fetchTodos: async (order) => {
-        const todos = await actions.getAllToDos(order);
+    fetchTodos: async (order, sortBy) => {
+        const todos = await getAllToDos(order, sortBy);
         set({ todos });
-    }
+    },
+    togglePinned: (id) => set((state) => {
+        const updatedTodos = state.todos.map((todo) =>
+            todo.id === id ? { ...todo, isPinned: !todo.isPinned } : todo
+        );
+        const sortedTodos = [
+            ...updatedTodos.filter(todo => todo.isPinned),
+            ...updatedTodos.filter(todo => !todo.isPinned)
+        ];
+        return { todos: sortedTodos };
+    }),
 }));
 
 export default useStore;
