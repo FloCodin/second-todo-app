@@ -4,24 +4,11 @@ import CompleteTodo from "@/app/components/todos/CompleteTodo";
 import DeleteTodo from "@/app/components/todos/DeleteTodo";
 import TodoPriority from "@/app/components/todos/TodoPriority";
 import TodoTitle from "@/app/components/todos/TodoTitle";
-import useStore from "@/app/store";
-import { togglePinned } from "@/actions/actions";
+
 import {taskProps} from "@/app/types/types";
 
 const Todo = ({ todo }: { todo: taskProps }) => {
-    const { togglePinned: togglePinnedLocal } = useStore();
 
-    const handlePinToggle = async () => {
-        togglePinnedLocal(todo.id); // Aktualisiert local
-        const formData = new FormData();
-        formData.append("inputId", todo.id);
-        try {
-            await togglePinned(formData); // Server-action
-        } catch (error) {
-            console.error('Failed to update pinned status:', error);
-            togglePinnedLocal(todo.id);
-        }
-    };
 
     const todoStyle = {
         textDecoration: todo.isCompleted ? 'line-through' : 'none',
@@ -49,7 +36,7 @@ const Todo = ({ todo }: { todo: taskProps }) => {
             <th className=
                     {`${todoPriorityStyle} border-amber-400 border border-solid items-center 
                      ${todo.isPinned ? 'bg-yellow-100 text-black' : ''}`} style={{ width: "17.5%" }}>
-                <TodoPriority todo={todo} />
+                <TodoPriority todo={todo}  />
 
             </th>
         </tr>

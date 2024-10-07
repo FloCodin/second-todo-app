@@ -47,7 +47,9 @@ export async function updateTodoCombined(formData: FormData){
         updateData.title = newTitle.trim();
     }
     const updatedTodo = await prisma.task.update({
-        where: { id: inputId },
+        where: {
+            id: inputId
+        },
         data: updateData,
     });
     // const updatedTodo = await prisma.task.update({

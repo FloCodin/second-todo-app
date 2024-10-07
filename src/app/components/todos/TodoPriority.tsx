@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import {changePriority, togglePinned, updateTodoCombined} from "@/actions/actions";
+import { updateTodoCombined} from "@/actions/actions";
 import useStore from "@/app/store";
 
 
