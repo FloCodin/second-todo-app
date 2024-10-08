@@ -40,6 +40,14 @@ export default function Home() {
                         value={sortBy}
                     >
                         <option value="createdAt">Date</option>
+                        <option value="Nothing">Nothing</option>
+                    </select>
+                    <select
+                        className="text-black"
+                        onChange={handleSortByChange}
+                        value={sortBy}
+                    >
+                        <option value="Nothing">Nothing</option>
                         <option value="priority">Priority</option>
                     </select>
                 </div>
