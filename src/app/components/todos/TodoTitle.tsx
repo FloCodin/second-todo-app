@@ -1,7 +1,6 @@
 "use client"
 import React, {useState, useEffect, useRef} from "react";
 import Button from "@/app/components/button/Button";
-import * as actions from "@/actions/actions"
 import useStore from "@/app/store";
 import { taskProps } from "@/app/types/types";
 import {IoIosSave} from "react-icons/io";
@@ -10,15 +9,16 @@ const TodoTitle = ({ todo }: { todo: taskProps }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newTitle, setNewTitle] = useState(todo.title);
     const editTodo = useStore((state) => state.editTodo);
-    const inputRef = useRef<HTMLInputElement>(null)
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
 
 
     useEffect(() => {
-        if (inputRef.current) {
-            // Now TypeScript knows inputRef.current is not null
-            inputRef.current.focus();
+        if (isEditing && inputRef.current) {
+            inputRef.current!.focus();
         }
-    }, []);
+    }, [isEditing]);
+
     const handleEdit = () => {
         if (todo.isCompleted) {
             return;
@@ -27,15 +27,16 @@ const TodoTitle = ({ todo }: { todo: taskProps }) => {
     };
 
     const handleBlur = async () => {
+        if (typeof newTitle === "string" && newTitle.trim() === "") {
+            alert("Title cannot be empty");
+            return;
+        }
+
         try {
-            if (newTitle !== todo.title) {
-                const formData = new FormData();
-                formData.append("inputId", todo.id);
-                formData.append("newTitle", newTitle as string);
-                await actions.updateTodoCombined(formData as FormData);
-                if (newTitle != null) {
-                    editTodo(todo.id, newTitle);
-                }
+            if (typeof newTitle === 'string' && newTitle.trim() !== '') {
+                await editTodo(todo.id, newTitle.trim(), todo.priority);
+            } else {
+                alert("Title cannot be empty");
             }
         } catch (error) {
             console.error("Error updating todo:", error);
@@ -44,9 +45,9 @@ const TodoTitle = ({ todo }: { todo: taskProps }) => {
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            handleBlur();
+            await handleBlur();
         }
     };
 

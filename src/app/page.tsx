@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import AddTodo from "@/app/components/todos/AddTodo";
 import Todo from "@/app/components/todos/Todo";
 import React, { useEffect, useState } from "react";
@@ -6,51 +6,46 @@ import useStore from "@/app/store";
 
 export default function Home() {
     const { todos, fetchTodos } = useStore();
-    const [order, setOrder] = useState("asc");
-    const [sortBy, setSortBy] = useState("createdAt");
+    const [dateOrder, setDateOrder] = useState("desc");
+    const [priorityOrder, setPriorityOrder] = useState("desc");
 
     useEffect(() => {
-        fetchTodos(order, sortBy);
-    }, [order, sortBy, fetchTodos]);
+        fetchTodos(dateOrder, priorityOrder);
+    }, [dateOrder, priorityOrder, fetchTodos]);
 
-    const handleSortOrderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setOrder(event.target.value);
-    }
+    const handleDateOrderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setDateOrder(event.target.value);
+    };
 
-    const handleSortByChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSortBy(event.target.value);
-    }
+    const handlePriorityOrderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setPriorityOrder(event.target.value);
+    };
 
     return (
         <div className="">
             <div className="flex justify-center flex-col items-center mt-24">
                 <AddTodo />
+
                 <div className="flex gap-4 mt-4">
                     <select
                         className="text-black"
-                        onChange={handleSortOrderChange}
-                        value={order}
+                        onChange={handleDateOrderChange}
+                        value={dateOrder}
                     >
-                        <option value="asc">Asc</option>
-                        <option value="desc">Desc</option>
+                        <option value="asc">Date Ascending</option>
+                        <option value="desc">Date Descending</option>
                     </select>
+
                     <select
                         className="text-black"
-                        onChange={handleSortByChange}
-                        value={sortBy}
+                        onChange={handlePriorityOrderChange}
+                        value={priorityOrder}
                     >
-                        <option value="createdAt">Date</option>
-                        <option value="Nothing">Nothing</option>
-                    </select>
-                    <select
-                        className="text-black"
-                        onChange={handleSortByChange}
-                        value={sortBy}
-                    >
-                        <option value="Nothing">Nothing</option>
-                        <option value="priority">Priority</option>
+                        <option value="asc">Priority Low to High</option>
+                        <option value="desc">Priority High to Low</option>
                     </select>
                 </div>
+
                 <div className="flex-col flex gap-2 justify-center mt-5 w-screen ">
                     {todos.map((todo) => (
                         <Todo key={todo.id} todo={todo} />

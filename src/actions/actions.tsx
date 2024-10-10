@@ -1,8 +1,8 @@
 "use server"
 
-import { prisma } from "@/app/utils/prisma";
-import { revalidatePath } from "next/cache";
-import { Prisma } from '@prisma/client';
+import {prisma} from "@/app/utils/prisma";
+import {revalidatePath} from "next/cache";
+import {Prisma} from '@prisma/client';
 
 export async function createTodo(formData: FormData) {
     const input = formData.get('input') as string;
@@ -14,7 +14,7 @@ export async function createTodo(formData: FormData) {
             title: input,
         },
     });
-    revalidatePath("/")
+    revalidatePath("/"); // Optional: Cache-Invalidierung
     return newTodo;
 }
 
@@ -25,85 +25,114 @@ interface Task {
     priority: number;
     isPinned: boolean;
 }
-export async function updateTodoCombined(formData: FormData){
-    const inputId = formData.get("inputId") as string
-    const allTodos = await getAllToDos("asc", "createdAt");
+
+export async function updateTodoCombined(formData: FormData) {
+    const inputId = formData.get("inputId") as string;
     const todo = await prisma.task.findUnique({
-        where: { id: inputId },
+        where: {id: inputId},
     }) as Task | null;
-    const updateStatus = !prisma.task.fields ?.isCompleted;
-    const newTitle = formData.get("newTitle") as string;
-    const newPriority: number = parseInt(formData.get("prioritys") as string, 10);
-    if (isNaN(newPriority) || newPriority < 1 || newPriority > 3) {
-        console.error("Invalid priority value");
+
+    if (!todo) {
+        console.error("Todo not found");
         return null;
     }
-    const updateData: Partial<Task> = {
-        isCompleted: !todo?.isCompleted,
-        priority: newPriority,
-        isPinned: !todo?.isPinned,
-    };
-    if (newTitle && newTitle.trim() !== "") {
-        updateData.title = newTitle.trim();
+
+    const newTitle = formData.get("newTitle") as string;
+    const newPriority: number = parseInt(formData.get("prioritys") as string, 10);
+
+    const toggleCompleted = formData.get("toggleCompleted") === "true";
+    const togglePinned = formData.get("togglePinned") === "true";
+
+    if (!isNaN(newPriority) && (newPriority >= 1 && newPriority <= 3)) {
+        todo.priority = newPriority; // Priorität wird nur geändert, wenn sie gültig ist
     }
+
+    if (newTitle && newTitle.trim() !== "") {
+        todo.title = newTitle.trim();
+    }
+
+    if (toggleCompleted) {
+        todo.isCompleted = !todo.isCompleted;
+    }
+
+    if (togglePinned) {
+        todo.isPinned = !todo.isPinned;
+    }
+
     const updatedTodo = await prisma.task.update({
         where: {
             id: inputId
         },
-        data: updateData,
+        data: {
+            title: todo.title,
+            priority: todo.priority,
+            isCompleted: todo.isCompleted,
+            isPinned: todo.isPinned,
+        },
     });
-    // const updatedTodo = await prisma.task.update({
-    //     where: {
-    //         id: inputId,
-    //     },
-    //     data: {
-    //         title: newTitle,
-    //         isCompleted: updateStatus,
-    //         priority: newPriority,
-    //         isPinned: !todo.isPinned,
-    //     }
-    // })
-    revalidatePath("/")
-    return { updatedTodo, allTodos, newPriority };
+
+    revalidatePath("/"); // Optional: Cache-Invalidierung
+    return updatedTodo;
 }
 
-export async function deleteTodo(formdata: FormData) {
-    const inputId = formdata.get("inputId") as string;
+
+export async function deleteTodo(formData: FormData) {
+    const inputId = formData.get("inputId") as string;
+
+    console.log("Trying to delete Todo with ID:", inputId);
+
+    const todo = await prisma.task.findUnique({
+        where: {id: inputId}
+    });
+
+    if (!todo) {
+        console.error("Todo not found, cannot delete.");
+        return null;
+    }
+
     await prisma.task.delete({
-        where: {
-            id: inputId
-        }
-    })
-    revalidatePath("/")
+        where: {id: inputId}
+    });
+
+    revalidatePath("/");
     return inputId;
 }
 
-
-export async function getAllToDos(order: string, sortBy: string) {
-    const sortOrder = castSortOrder(order);
-    let orderBy: Prisma.TaskOrderByWithRelationInput[] = [
-        { isPinned: 'desc' },
-        sortBy === 'priority'
-            ? { priority: 'desc' }
-            : { createdAt: sortOrder }
-    ];
-
+export async function getAllToDos(dateOrder: string, priorityOrder: string) {
     return prisma.task.findMany({
-        orderBy: orderBy,
+        orderBy: [
+            {isPinned: 'desc',},
+            {priority: castSortOrder(priorityOrder)},
+            {createdAt: castSortOrder(dateOrder)}
+        ],
     });
 }
 
+// export async function getAllToDos(priorityOrder: string) {
+//     return prisma.task.findMany({
+//         orderBy: [
+//             { priority: castSortOrder(priorityOrder) }
+//         ],
+//     });
+// }
+
+
 function castSortOrder(order: string): Prisma.SortOrder {
-    if (order === "asc") return Prisma.SortOrder.asc;
-    if (order === "desc") return Prisma.SortOrder.desc;
-    return Prisma.SortOrder.asc;
+    return order === "asc" ? Prisma.SortOrder.asc : Prisma.SortOrder.desc;
 }
 
 
-
-
-
-
+// const updatedTodo = await prisma.task.update({
+//     where: {
+//         id: inputId,
+//     },
+//     data: {
+//         title: newTitle,
+//         isCompleted: updateStatus,
+//         priority: newPriority,
+//         isPinned: !todo.isPinned,
+//     }
+// })
 
 // export async function changeStatus(formData: FormData) {
 //     const inputId = formData.get("inputId") as string
@@ -140,9 +169,6 @@ function castSortOrder(order: string): Prisma.SortOrder {
 //     revalidatePath("/")
 //     return updatedTodo;
 // }
-
-
-
 
 
 // export async function changePriority(formData: FormData) {
@@ -190,33 +216,6 @@ function castSortOrder(order: string): Prisma.SortOrder {
 //
 //     return { updatedTodo, allTodos };
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // import {prisma} from "@/app/utils/prisma";

@@ -1,16 +1,13 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
-import { updateTodoCombined} from "@/actions/actions";
+import { updateTodoCombined } from "@/actions/actions";
 import useStore from "@/app/store";
+import { taskProps } from "@/app/types/types";
 
-
-const TodoPriority = ({ todo }: {formData:FormData},{ todo: taskProps }) => {
+const TodoPriority = ({ todo }: { todo: taskProps }) => {
     const [priority, setPriority] = useState(todo.priority);
     const updateTodoPriority = useStore((state) => state.changePriority);
-
-    useEffect(() => {
-        setPriority(todo.priority);
-    }, [todo]);
+    const togglePinnedLocal = useStore((state) => state.togglePinned);
 
     const handlePriorityChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newPriority = parseInt(e.target.value, 10);
@@ -24,20 +21,16 @@ const TodoPriority = ({ todo }: {formData:FormData},{ todo: taskProps }) => {
         updateTodoPriority(todo.id, newPriority);
     };
 
-
-    const { togglePinned: togglePinnedLocal, setAllTodos } = useStore();
-
+    // Handle Pin Toggle
     const handlePinToggle = async () => {
-        togglePinnedLocal(todo.id); // lokale Zustand
         const formData = new FormData();
         formData.append("inputId", todo.id);
-        try {
-            const { allTodos } = await togglePinned(formData); // action call
-            setAllTodos(allTodos); // Aktualisieren Sie den gesamten Todo-Zustand
-        } catch (error) {
-            console.error('Failed to update pinned status:', error);
-        }
+        formData.append("togglePinned", "true"); // Pinned so wie es soll
+
+        await updateTodoCombined(formData);
+        togglePinnedLocal(todo.id);
     };
+
     return (
         <div>
             TP {todo.priority}
