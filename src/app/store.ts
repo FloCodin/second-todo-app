@@ -1,7 +1,15 @@
 import { create } from 'zustand'
 import { taskProps } from "@/app/types/types"
 import { getAllToDos, createTodo, updateTodoCombined, deleteTodo } from "@/actions/actions";
-import { FormData } from 'formdata-node';
+
+// Update taskProps interface to include isPinned
+interface taskProps {
+    id: string;
+    title: string;
+    priority: number;
+    isPinned: boolean;
+    // ... other properties
+}
 
 interface TodoStore {
     todos: taskProps[];
@@ -22,7 +30,7 @@ const useStore = create<TodoStore>((set, get) => ({
     addTodo: async (input) => {
         const formData = new FormData();
         formData.append('input', input);
-        const newTodo = await createTodo(formData);
+        const newTodo = await createTodo(formData as FormData);
         if (newTodo) {
             set((state) => ({ todos: [...state.todos, newTodo] }));
         }
@@ -31,7 +39,7 @@ const useStore = create<TodoStore>((set, get) => ({
     deleteTodo: async (id) => {
         const formData = new FormData();
         formData.append('inputId', id);
-        await deleteTodo(formData);
+        await deleteTodo(formData as FormData);
         set((state) => ({ todos: state.todos.filter(todo => todo.id !== id) }));
     },
 
@@ -42,7 +50,7 @@ const useStore = create<TodoStore>((set, get) => ({
             formData.append('inputId', id);
             formData.append('newTitle', todo.title);
             formData.append('prioritys', todo.priority.toString());
-            const updatedTodo = await updateTodoCombined(formData);
+            const updatedTodo = await updateTodoCombined(formData as FormData);
             if (updatedTodo) {
                 set((state) => ({
                     todos: state.todos.map(t =>
@@ -58,7 +66,7 @@ const useStore = create<TodoStore>((set, get) => ({
         formData.append('inputId', id);
         formData.append('newTitle', newTitle);
         formData.append('prioritys', newPriority.toString());
-        const updatedTodo = await updateTodoCombined(formData);
+        const updatedTodo = await updateTodoCombined(formData as FormData);
         if (updatedTodo) {
             set((state) => ({
                 todos: state.todos.map(todo =>
@@ -87,12 +95,12 @@ const useStore = create<TodoStore>((set, get) => ({
             formData.append('inputId', id);
             formData.append('newTitle', todo.title);
             formData.append('prioritys', todo.priority.toString());
-            const updatedTodo = await updateTodoCombined(formData);
+            const updatedTodo = await updateTodoCombined(formData as FormData);
             if (updatedTodo) {
                 set((state) => ({
                     todos: state.todos.map(t =>
-                        t.id === id ? { ...updatedTodo } : t
-                    ).sort((a, b) => b.isPinned - a.isPinned)
+                        t.id === id ? { ...updatedTodo, isPinned: !t.isPinned } : t
+                    ).sort((a, b) => Number(b.isPinned) - Number(a.isPinned))
                 }));
             }
         }
