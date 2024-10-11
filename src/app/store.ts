@@ -2,13 +2,11 @@ import { create } from 'zustand'
 import { taskProps } from "@/app/types/types"
 import { getAllToDos, createTodo, updateTodoCombined, deleteTodo } from "@/actions/actions";
 
-// Update taskProps interface to include isPinned
 interface taskProps {
     id: string;
     title: string;
     priority: number;
     isPinned: boolean;
-    // ... other properties
 }
 
 interface TodoStore {
