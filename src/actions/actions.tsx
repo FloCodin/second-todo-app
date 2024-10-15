@@ -14,9 +14,11 @@ export async function createTodo(formData: FormData) {
             title: input,
         },
     });
-    revalidatePath("/"); // Optional: Cache-Invalidierung
+    revalidatePath("/");
+
     return newTodo;
 }
+
 
 interface Task {
     id: string;
