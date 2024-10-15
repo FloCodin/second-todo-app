@@ -40,7 +40,7 @@ export async function updateTodoCombined(formData: FormData) {
     }
 
     const newTitle = formData.get("newTitle") as string;
-    const newPriority: number = parseInt(formData.get("prioritys") as string, 10);
+    const newPriority: number = parseInt(formData.get("priority") as string, 10);
 
     const toggleCompleted = formData.get("toggleCompleted") === "true";
     const togglePinned = formData.get("togglePinned") === "true";

@@ -25,14 +25,12 @@ const useStore = create<TodoStore>((set, get) => ({
     todos: [],
     setTodos: (todos) => set({ todos }),
 
-    addTodo: async (input) => {
-        const formData = new FormData();
-        formData.append('input', input);
-        const newTodo = await createTodo(formData as FormData);
+    addTodo: async (newTodo) => {
         if (newTodo) {
-            set((state) => ({ todos: [...state.todos, newTodo] }));
+            set((state) => ({ todos: [...state.todos, { ...newTodo }] }));
         }
     },
+
 
     deleteTodo: async (id) => {
         const formData = new FormData();
@@ -82,7 +80,6 @@ const useStore = create<TodoStore>((set, get) => ({
 
     fetchTodos: async (dateOrder, priorityOrder) => {
         const todos = await getAllToDos(dateOrder, priorityOrder);
-        console.log("Fetched Todos:", todos);
         set({ todos });
     },
 

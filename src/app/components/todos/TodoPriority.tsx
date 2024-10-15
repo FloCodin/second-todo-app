@@ -15,7 +15,7 @@ const TodoPriority = ({ todo }: { todo: taskProps }) => {
 
         const formData = new FormData();
         formData.append("inputId", todo.id.toString());
-        formData.append("prioritys", newPriority.toString());
+        formData.append("priority", newPriority.toString());
 
         await updateTodoCombined(formData);
         updateTodoPriority(todo.id, newPriority);
