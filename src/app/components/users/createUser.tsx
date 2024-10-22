@@ -9,7 +9,7 @@ export default function CreateUser() {
 
     useEffect(() => {
         fetchUsers();
-        fetchTodos("", "");
+        fetchTodos("", "","");
     }, [fetchUsers, fetchTodos]);
 
     const handleSubmit = async (e: React.FormEvent) => {

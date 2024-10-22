@@ -7,7 +7,6 @@ import {Prisma} from '@prisma/client';
 export async function createTodo(formData: FormData) {
     const input = formData.get('input');
 
-    // Check if input exists and is a string
     if (typeof input !== 'string' || !input.trim()) {
         return null;
     }
