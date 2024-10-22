@@ -3,6 +3,7 @@ import AddTodo from "@/app/components/todos/AddTodo";
 import Todo from "@/app/components/todos/Todo";
 import React, { useEffect, useState } from "react";
 import useStore from "@/app/store";
+import CreateUser from "@/app/components/users/createUser";
 
 export default function Home() {
     const { todos, fetchTodos } = useStore();
@@ -51,6 +52,9 @@ export default function Home() {
                         <Todo key={todo.id} todo={todo} />
                     ))}
                 </div>
+            </div>
+            <div>
+                <CreateUser/>
             </div>
         </div>
     );

@@ -1,6 +1,8 @@
 import { create } from 'zustand'
-import { taskProps } from "@/app/types/types"
-import { getAllToDos, createTodo, updateTodoCombined, deleteTodo } from "@/actions/actions";
+import {taskProps,} from "@/app/types/types"
+import {getAllToDos, createTodo, updateTodoCombined, deleteTodo, createUser, getAllUsers} from "@/actions/actions";
+import {User} from "@prisma/client";
+import {prisma} from "@/app/utils/prisma";
 
 interface taskProps {
     id: string;
@@ -19,12 +21,17 @@ interface TodoStore {
     deleteTodo: (id: string) => Promise<void>;
     editTodo: (id: string, newTitle: string, newPriority: number) => Promise<void>;
     togglePinned: (id: string) => Promise<void>;
+    users: User[];
+    setUsers: (users: User[]) => void;
+    fetchUsers: () => Promise<void>;
+    addUser: (name: string, email: string) => Promise<void>;
 }
 
 const useStore = create<TodoStore>((set, get) => ({
     todos: [],
+    users: [],
+    setUsers: (users) => set({ users }),
     setTodos: (todos) => set({ todos }),
-
     addTodo: async (newTodo) => {
         if (newTodo) {
             set((state) => ({ todos: [...state.todos, { ...newTodo }] }));
@@ -98,6 +105,24 @@ const useStore = create<TodoStore>((set, get) => ({
                     ).sort((a, b) => Number(b.isPinned) - Number(a.isPinned))
                 }));
             }
+        }
+    },
+
+    fetchUsers: async () => {
+        try {
+            const users = await getAllUsers();
+            set({ users });
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    },
+    addUser: async (name, email) => {
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('email', email);
+        const newUser = await createUser(formData as FormData);
+        if (newUser) {
+            set((state) => ({ users: [...state.users, newUser] }));
         }
     },
 }));

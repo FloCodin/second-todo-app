@@ -19,7 +19,6 @@ export async function createTodo(formData: FormData) {
     return newTodo;
 }
 
-
 interface Task {
     id: string;
     title: string;
@@ -117,8 +116,30 @@ export async function getAllToDos(dateOrder: string, priorityOrder: string) {
 //         ],
 //     });
 // }
+export async function getAllUsers() {
+    return prisma.user.findMany();
+}
 
-
+export async function createUser (formData: FormData) {
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    if (!name.trim() || !email.trim()) {
+        return null;
+    }
+    try {
+        const newUser  = await prisma.user.create({
+            data: {
+                email: email,
+                name: name,
+            },
+        });
+        revalidatePath("/");
+        return newUser ;
+    } catch (error) {
+        console.error("Error creating user:", error);
+        return null;
+    }
+}
 function castSortOrder(order: string): Prisma.SortOrder {
     return order === "asc" ? Prisma.SortOrder.asc : Prisma.SortOrder.desc;
 }

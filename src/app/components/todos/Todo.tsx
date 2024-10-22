@@ -37,7 +37,6 @@ const Todo = ({ todo }: { todo: taskProps }) => {
                     {`${todoPriorityStyle} border-amber-400 border border-solid items-center 
                      ${todo.isPinned ? 'bg-yellow-100 text-black' : ''}`} style={{ width: "17.5%" }}>
                 <TodoPriority todo={todo}  />
-
             </th>
         </tr>
     )

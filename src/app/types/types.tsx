@@ -27,4 +27,12 @@ export interface taskProps {
     isPinned: boolean;
     createdAt?: Date;
     priority: number;
+    assignedToId?: string;
+    assignedTo?: string;
+}
+export interface User {
+    id: string;
+    email: string;
+    name: string;
+    todos?: taskProps[];
 }
