@@ -1,6 +1,5 @@
 //store.js
 import { create } from 'zustand'
-import {todoProps,} from "@/app/types/types"
 import {
     getAllToDos,
     createTodo,
@@ -12,7 +11,6 @@ import {
 } from "@/actions/actions";
 import {User} from "@prisma/client";
 import { deleteUser as deleteUserAction } from '@/actions/actions';
-import {prisma} from "@/app/utils/prisma";
 import addTodo from "@/app/components/todos/AddTodo";
 
 interface taskProps {
