@@ -20,12 +20,12 @@ export interface buttonProps {
     actionButton?: boolean
     bgColor?: string
 }
-export interface taskProps {
+export interface todoProps {
     id: string;
     title?: string | null;
     isCompleted: boolean;
     isPinned: boolean;
-    createdAt?: Date;
+    createdAt: Date;
     priority: number;
     assignedToId?: string;
     assignedTo?: string;
@@ -34,5 +34,5 @@ export interface User {
     id: string;
     email: string;
     name: string;
-    todos?: taskProps[];
+    todos?: [];
 }

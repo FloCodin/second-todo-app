@@ -1,14 +1,26 @@
+//store.js
 import { create } from 'zustand'
-import {taskProps,} from "@/app/types/types"
-import {getAllToDos, createTodo, updateTodoCombined, deleteTodo, createUser, getAllUsers} from "@/actions/actions";
+import {todoProps,} from "@/app/types/types"
+import {
+    getAllToDos,
+    createTodo,
+    updateTodoCombined,
+    deleteTodo,
+    createUser,
+    getAllUsers,
+    assignTodoToUser
+} from "@/actions/actions";
 import {User} from "@prisma/client";
+import { deleteUser as deleteUserAction } from '@/actions/actions';
 import {prisma} from "@/app/utils/prisma";
+import addTodo from "@/app/components/todos/AddTodo";
 
 interface taskProps {
     id: string;
     title: string;
     priority: number;
     isPinned: boolean;
+    userId?: string;
 }
 
 interface TodoStore {
@@ -16,7 +28,7 @@ interface TodoStore {
     setTodos: (todos: taskProps[]) => void;
     completeTodo: (id: string) => Promise<void>;
     changePriority: (id: string, newPriority: number) => void;
-    fetchTodos: (order: string, sortBy: string) => Promise<void>;
+    fetchTodos: (order: string, sortBy: string, userOrder: string) => Promise<void>;
     addTodo: (input: string) => Promise<void>;
     deleteTodo: (id: string) => Promise<void>;
     editTodo: (id: string, newTitle: string, newPriority: number) => Promise<void>;
@@ -25,6 +37,8 @@ interface TodoStore {
     setUsers: (users: User[]) => void;
     fetchUsers: () => Promise<void>;
     addUser: (name: string, email: string) => Promise<void>;
+    assignTodoToUser: (todoId: string, userId: string) => Promise<void>;
+    deleteUser: (userId: string) => Promise<void>;
 }
 
 const useStore = create<TodoStore>((set, get) => ({
@@ -32,10 +46,15 @@ const useStore = create<TodoStore>((set, get) => ({
     users: [],
     setUsers: (users) => set({ users }),
     setTodos: (todos) => set({ todos }),
-    addTodo: async (newTodo) => {
+
+    addTodo: async (title) => {
+        const formData = new FormData();
+        formData.append('title', title);
+        const newTodo = await createTodo(formData as FormData);
         if (newTodo) {
-            set((state) => ({ todos: [...state.todos, { ...newTodo }] }));
+            set((state) => ({ todos: [...state.todos, newTodo] }));
         }
+        await addTodo
     },
 
 
@@ -85,8 +104,8 @@ const useStore = create<TodoStore>((set, get) => ({
         )
     })),
 
-    fetchTodos: async (dateOrder, priorityOrder) => {
-        const todos = await getAllToDos(dateOrder, priorityOrder);
+    fetchTodos: async (dateOrder, priorityOrder, userOrder) => {
+        const todos = await getAllToDos(dateOrder, priorityOrder, userOrder);
         set({ todos });
     },
 
@@ -123,6 +142,24 @@ const useStore = create<TodoStore>((set, get) => ({
         const newUser = await createUser(formData as FormData);
         if (newUser) {
             set((state) => ({ users: [...state.users, newUser] }));
+        }
+    },
+    assignTodoToUser: async (todoId, userId) => {
+        await assignTodoToUser(todoId, userId);
+        set((state) => ({
+            todos: state.todos.map(todo =>
+                todo.id === todoId ? { ...todo, userId: userId } : todo
+            ),
+        }));
+    },
+    deleteUser: async (userId: string) => {
+        try {
+            await deleteUserAction(userId);
+            set((state) => ({
+                users: state.users.filter(user => user.id !== userId)
+            }));
+        } catch (error) {
+            console.error("Error deleting user:", error);
         }
     },
 }));

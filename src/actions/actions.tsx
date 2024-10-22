@@ -5,15 +5,19 @@ import {revalidatePath} from "next/cache";
 import {Prisma} from '@prisma/client';
 
 export async function createTodo(formData: FormData) {
-    const input = formData.get('input') as string;
-    if (!input.trim()) {
+    const input = formData.get('input');
+
+    // Check if input exists and is a string
+    if (typeof input !== 'string' || !input.trim()) {
         return null;
     }
-    const newTodo = await prisma.task.create({
+
+    const newTodo = await prisma.todo.create({
         data: {
-            title: input,
+            title: input.trim(),
         },
     });
+
     revalidatePath("/");
 
     return newTodo;
@@ -29,7 +33,7 @@ interface Task {
 
 export async function updateTodoCombined(formData: FormData) {
     const inputId = formData.get("inputId") as string;
-    const todo = await prisma.task.findUnique({
+    const todo = await prisma.todo.findUnique({
         where: {id: inputId},
     }) as Task | null;
 
@@ -60,7 +64,7 @@ export async function updateTodoCombined(formData: FormData) {
         todo.isPinned = !todo.isPinned;
     }
 
-    const updatedTodo = await prisma.task.update({
+    const updatedTodo = await prisma.todo.update({
         where: {
             id: inputId
         },
@@ -72,7 +76,7 @@ export async function updateTodoCombined(formData: FormData) {
         },
     });
 
-    revalidatePath("/"); // Optional: Cache-Invalidierung
+    revalidatePath("/");
     return updatedTodo;
 }
 
@@ -82,7 +86,7 @@ export async function deleteTodo(formData: FormData) {
 
     console.log("Trying to delete Todo with ID:", inputId);
 
-    const todo = await prisma.task.findUnique({
+    const todo = await prisma.todo.findUnique({
         where: {id: inputId}
     });
 
@@ -91,7 +95,7 @@ export async function deleteTodo(formData: FormData) {
         return null;
     }
 
-    await prisma.task.delete({
+    await prisma.todo.delete({
         where: {id: inputId}
     });
 
@@ -99,14 +103,25 @@ export async function deleteTodo(formData: FormData) {
     return inputId;
 }
 
-export async function getAllToDos(dateOrder: string, priorityOrder: string) {
-    return prisma.task.findMany({
-        orderBy: [
-            {isPinned: 'desc',},
-            {priority: castSortOrder(priorityOrder)},
-            {createdAt: castSortOrder(dateOrder)}
-        ],
+export async function getAllToDos(dateOrder: string, priorityOrder: string, userOrder: string) {
+    let orderBy: Prisma.TodoOrderByWithRelationInput[] = [];
+
+    if (dateOrder) {
+        orderBy.push({ createdAt: dateOrder as Prisma.SortOrder });
+    }
+    if (priorityOrder) {
+        orderBy.push({ priority: priorityOrder as Prisma.SortOrder });
+    }
+    if (userOrder) {
+        orderBy.push({ user: { name: userOrder as Prisma.SortOrder } });
+    }
+
+    const todos = await prisma.todo.findMany({
+        orderBy,
+        include: { user: true },
     });
+
+    return todos;
 }
 
 // export async function getAllToDos(priorityOrder: string) {
@@ -139,6 +154,21 @@ export async function createUser (formData: FormData) {
         console.error("Error creating user:", error);
         return null;
     }
+}
+// actions.ts
+
+export const assignTodoToUser = async (todoId: string, userId: string) => {
+    return await prisma.todo.update({
+        where: { id: todoId },
+        data: { userId: userId },
+    });
+};
+
+export async function deleteUser(userId: string) {
+    await prisma.user.delete({
+        where: { id: userId },
+    });
+    revalidatePath("/");
 }
 function castSortOrder(order: string): Prisma.SortOrder {
     return order === "asc" ? Prisma.SortOrder.asc : Prisma.SortOrder.desc;
