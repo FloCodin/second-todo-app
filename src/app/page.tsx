@@ -70,6 +70,16 @@ export default function Home() {
                     </select>
                 </div>
 
+                <div className="w-full">
+                    <tr className="flex justify-evenly w-full ">
+                        <th className="pl-40  text-lg "> todo:</th>
+                        <th className="pl-52 text-lg"> creation date:</th>
+                        <th className="pl-40 text-lg"> priority:</th>
+                        <th className="pl-52 text-lg"> actions:</th>
+                        <th className="pl-40 text-lg"> assigned to:</th>
+                    </tr>
+                </div>
+
                 <div className="flex-col flex gap-2 justify-center mt-5 w-screen ">
                     {todos.map((todo) => (
                         <Todo key={todo.id} todo={todo} />
