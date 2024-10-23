@@ -1,5 +1,5 @@
 "use client"
-import {taskProps} from "@/app/types/types";
+import {todoProps} from "@/app/types/types";
 import Form from "@/app/components/form/Form";
 import * as actions from "@/actions/actions";
 import Input from "@/app/components/inputField/Input";
@@ -7,7 +7,7 @@ import Button from "@/app/components/button/Button";
 import {FaTrash} from "react-icons/fa";
 import useStore from "@/app/store";
 
-const DeleteTodo = ({todo}: { todo: taskProps }) => {
+const DeleteTodo = ({todo}: { todo: todoProps }) => {
     const deleteTodo = useStore((state) => state.deleteTodo);
 
     const handleDelete = async (formData: FormData) => {

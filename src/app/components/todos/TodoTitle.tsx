@@ -2,10 +2,10 @@
 import React, {useState, useEffect, useRef} from "react";
 import Button from "@/app/components/button/Button";
 import useStore from "@/app/store";
-import { taskProps } from "@/app/types/types";
+import { todoProps } from "@/app/types/types";
 import {IoIosSave} from "react-icons/io";
 
-const TodoTitle = ({ todo }: { todo: taskProps }) => {
+const TodoTitle = ({ todo }: { todo: todoProps }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newTitle, setNewTitle] = useState(todo.title);
     const editTodo = useStore((state) => state.editTodo);

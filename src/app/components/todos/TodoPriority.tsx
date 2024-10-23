@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { updateTodoCombined } from "@/actions/actions";
 import useStore from "@/app/store";
-import { taskProps } from "@/app/types/types";
+import { todoProps } from "@/app/types/types";
 
-const TodoPriority = ({ todo }: { todo: taskProps }) => {
+const TodoPriority = ({ todo }: { todo: todoProps }) => {
     const [priority, setPriority] = useState(todo.priority);
     const updateTodoPriority = useStore((state) => state.changePriority);
     const togglePinnedLocal = useStore((state) => state.togglePinned);
@@ -17,7 +17,7 @@ const TodoPriority = ({ todo }: { todo: taskProps }) => {
         formData.append("inputId", todo.id.toString());
         formData.append("priority", newPriority.toString());
 
-        await updateTodoCombined(formData);
+        await updateTodoCombined(formData as FormData);
         updateTodoPriority(todo.id, newPriority);
     };
 
@@ -27,7 +27,7 @@ const TodoPriority = ({ todo }: { todo: taskProps }) => {
         formData.append("inputId", todo.id);
         formData.append("togglePinned", "true"); // Pinned so wie es soll
 
-        await updateTodoCombined(formData);
+        await updateTodoCombined(formData as FormData);
         togglePinnedLocal(todo.id);
     };
 
@@ -40,13 +40,13 @@ const TodoPriority = ({ todo }: { todo: taskProps }) => {
                 <select
                     name="prioritys"
                     id="priority-value"
-                    className="text-black"
+                    className="text-black bg-gray-500"
                     value={priority}
                     onChange={handlePriorityChange}
                 >
-                    <option value="1">Low Priority</option>
-                    <option value="2">Mid Priority</option>
-                    <option value="3">High Priority</option>
+                    <option value="1">Low </option>
+                    <option value="2">Mid </option>
+                    <option value="3">High </option>
                 </select>
             </form>
             <button onClick={handlePinToggle}>

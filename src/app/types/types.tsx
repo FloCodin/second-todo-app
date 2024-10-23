@@ -22,7 +22,7 @@ export interface buttonProps {
 }
 export interface todoProps {
     id: string;
-    title?: string | null;
+    title: string | null;
     isCompleted: boolean;
     isPinned: boolean;
     createdAt: Date;

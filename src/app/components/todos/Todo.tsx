@@ -6,13 +6,13 @@ import TodoTitle from "@/app/components/todos/TodoTitle";
 import useStore from "@/app/store";
 
 
-const Todo = ({ todo }) => {
-    const { users, assignTodoToUser, fetchUsers } = useStore((state) => ({
+const Todo = ({todo}) => {
+    const {users, assignTodoToUser, fetchUsers} = useStore((state) => ({
         users: state.users,
         assignTodoToUser: state.assignTodoToUser,
         fetchUsers: state.fetchUsers,
     }));
-    const [selectedUser , setSelectedUser ] = useState(todo.userId || '');
+    const [selectedUser, setSelectedUser] = useState(todo.userId || '');
 
     const todoStyle = {
         textDecoration: todo.isCompleted ? 'line-through' : 'none',
@@ -20,7 +20,7 @@ const Todo = ({ todo }) => {
     };
 
     const todoPriorityStyle = todo.priority <= 1
-        ? 'border-amber-400 border-solid border-2'
+        ? 'border-amber-200 border-solid border-2'
         : todo.priority <= 2
             ? 'border-amber-400 border-solid border-4'
             : todo.priority <= 3
@@ -33,44 +33,54 @@ const Todo = ({ todo }) => {
 
     const handleUserChange = async (e) => {
         const userId = e.target.value;
-        setSelectedUser (userId);
-        await assignTodoToUser (todo.id, userId);
+        setSelectedUser(userId);
+        await assignTodoToUser(todo.id, userId);
     };
 
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
-
+    // <th> todo</th>
+    // <th> creation date</th>
+    // <th> priority</th>
+    // <th> actions</th>
+    // <th> assigned to</th>
     return (
-        <tr className={`flex justify-between w-screen pl-4 pr-4`} style={todoStyle}>
-            <th className="border-amber-400 border border-solid" style={{ width: "30%" }}>
-                <TodoTitle todo={todo} />
-            </th>
-            <th className="border-amber-400 border border-solid" style={{ width: "20%" }}>
-                creation date: {formattedDate}
-            </th>
-            <th className="border-amber-400 border border-solid" style ={{ width: "15%" }}>
-                <CompleteTodo todo={todo} /> Complete Todo
-            </th>
-            <th className="border-amber-400 border border-solid" style={{ width: "15%" }}>
-                <DeleteTodo todo={todo} /> delete Todo
-            </th>
-            <th className=
-                    {`${todoPriorityStyle} border-amber-400 border border-solid items-center 
+        <div>
+
+
+            <tr className={`flex justify-between w-screen pl-4 pr-4`} style={todoStyle}>
+
+                <th className="border-b border-white" style={{width: "30%"}}>
+                    <TodoTitle todo={todo}/>
+                </th>
+                <th className="border-b border-white" style={{width: "10%"}}>
+                    {formattedDate}
+                </th>
+                <th className=
+                        {`${todoPriorityStyle} border-amber-400 border border-solid items-center 
                      ${todo.isPinned ? 'bg-yellow-100 text-black' : ''}`}
-                style={{ width: "17.5%" }}>
-                <TodoPriority todo={todo} />
-            </th>
-            <th className="border-amber-400 border border-solid text-black" style={{ width: "10%" }}>
-                <select value={selectedUser} onChange={handleUserChange}>
-                    <option value="">Select User</option>
-                    {users.map((user) => (
-                        <option key={user.id} value={user.id}>{user.name}</option>
-                    ))}
-                </select>
-            </th>
-        </tr>
-    );
+                    style={{width: "15.5%"}}>
+                    <TodoPriority todo={todo}/>
+                </th>
+                <th className="border-b border-white flex justify-center" style={{width: "10%"}}>
+                    <CompleteTodo todo={todo} className="pr-4"/>
+
+                    <DeleteTodo todo={todo}/>
+                </th>
+
+                <th className="border-b border-white text-black" style={{width: "10%"}}>
+                    <select value={selectedUser} onChange={handleUserChange} className="bg-gray-500">
+                        <option value="">Select User</option>
+                        {users.map((user) => (
+                            <option key={user.id} value={user.id}>{user.name}</option>
+                        ))}
+                    </select>
+                </th>
+            </tr>
+        </div>
+    )
+        ;
 };
 
 export default Todo;

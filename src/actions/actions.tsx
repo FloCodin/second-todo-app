@@ -169,6 +169,6 @@ export async function deleteUser(userId: string) {
     });
     revalidatePath("/");
 }
-function castSortOrder(order: string): Prisma.SortOrder {
-    return order === "asc" ? Prisma.SortOrder.asc : Prisma.SortOrder.desc;
-}
+// function castSortOrder(order: string): Prisma.SortOrder {
+//     return order === "asc" ? Prisma.SortOrder.asc : Prisma.SortOrder.desc;
+// }

@@ -12,7 +12,7 @@ const AddTodo = () => {
     const handleSubmit = async (formData: FormData) => {
         const newTodo = await actions.createTodo(formData);
         if (newTodo) {
-            addTodo(newTodo);
+            await addTodo(newTodo);
         }
     };
 
