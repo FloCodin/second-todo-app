@@ -4,6 +4,7 @@ import Todo from "@/app/components/todos/Todo";
 import React, { useEffect, useState } from "react";
 import useStore from "@/app/store";
 import CreateUser from "@/app/components/users/createUser";
+import UserOverview from "@/app/components/users/userOverview";
 
 export default function Home() {
     const { todos, fetchTodos } = useStore();
@@ -86,9 +87,7 @@ export default function Home() {
                     ))}
                 </div>
             </div>
-            <div>
-                <CreateUser/>
-            </div>
+
         </div>
     );
 }
