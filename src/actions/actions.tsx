@@ -123,39 +123,42 @@ export async function getAllToDos(dateOrder: string, priorityOrder: string, user
     return todos;
 }
 
-// export async function getAllToDos(priorityOrder: string) {
-//     return prisma.task.findMany({
-//         orderBy: [
-//             { priority: castSortOrder(priorityOrder) }
-//         ],
-//     });
-// }
 export async function getAllUsers() {
-    return prisma.user.findMany();
+    return prisma.user.findMany({
+        include: { roles: true }
+    });
 }
 
-export async function createUser (formData: FormData) {
+export async function createUser(formData: FormData) {
     const name = formData.get('name') as string;
     const email = formData.get('email') as string;
+    const roles = formData.getAll('roles') as string[];
+
     if (!name.trim() || !email.trim()) {
-        return null;
+        throw new Error("Name and email are required");
     }
+
     try {
-        const newUser  = await prisma.user.create({
+        const newUser = await prisma.user.create({
             data: {
                 email: email,
                 name: name,
+                roles: {
+                    connect: roles.map(roleId => ({ id: roleId }))
+                }
             },
+            include: { roles: true } 
         });
+
         revalidatePath("/");
-        return newUser ;
+
+        return newUser;
+
     } catch (error) {
         console.error("Error creating user:", error);
-        return null;
+        throw new Error("Failed to create user. Please try again.");
     }
 }
-// actions.ts
-
 export const assignTodoToUser = async (todoId: string, userId: string) => {
     return await prisma.todo.update({
         where: { id: todoId },
@@ -169,6 +172,45 @@ export async function deleteUser(userId: string) {
     });
     revalidatePath("/");
 }
-// function castSortOrder(order: string): Prisma.SortOrder {
-//     return order === "asc" ? Prisma.SortOrder.asc : Prisma.SortOrder.desc;
-// }
+
+export async function createRole(formData: FormData) {
+    const name = formData.get('name') as string;
+    if (!name.trim()) {
+        return null;
+    }
+    try {
+        const newRole = await prisma.role.create({
+            data: {
+                name: name,
+            },
+        });
+        revalidatePath("/");
+        return newRole;
+    } catch (error) {
+        console.error("Error creating role:", error);
+        return null;
+    }
+}
+
+export async function getAllRoles() {
+    return prisma.role.findMany();
+}
+export async function updateUserRole(userId: string, roleId: string) {
+    try {
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                roles: {
+                    set: [{ id: roleId }]
+                }
+            },
+            include: { roles: true }
+        });
+
+        revalidatePath("/");
+        return updatedUser;
+    } catch (error) {
+        console.error("Error updating user role:", error);
+        throw new Error("Failed to update user role. Please try again.");
+    }
+}

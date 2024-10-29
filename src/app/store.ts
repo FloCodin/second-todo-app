@@ -7,7 +7,7 @@ import {
     deleteTodo,
     createUser,
     getAllUsers,
-    assignTodoToUser
+    assignTodoToUser, createRole, getAllRoles, updateUserRole
 } from "@/actions/actions";
 import {User} from "@prisma/client";
 import { deleteUser as deleteUserAction } from '@/actions/actions';
@@ -19,6 +19,10 @@ interface taskProps {
     priority: number;
     isPinned: boolean;
     userId?: string;
+}
+interface Role {
+    id: string;
+    name: string;
 }
 
 interface TodoStore {
@@ -34,14 +38,20 @@ interface TodoStore {
     users: User[];
     setUsers: (users: User[]) => void;
     fetchUsers: () => Promise<void>;
-    addUser: (name: string, email: string) => Promise<void>;
+    addUser: (name: string, email: string, selectedRoles: string[]) => Promise<void>;
     assignTodoToUser: (todoId: string, userId: string) => Promise<void>;
     deleteUser: (userId: string) => Promise<void>;
+    roles: Role[];
+    setRoles: (roles: Role[]) => void;
+    fetchRoles: () => Promise<void>;
+    addRole: (name: string) => Promise<void>;
 }
 
 const useStore = create<TodoStore>((set, get) => ({
     todos: [],
     users: [],
+    roles: [],
+    setRoles: (roles) => set({ roles }),
     setUsers: (users) => set({ users }),
     setTodos: (todos) => set({ todos }),
 
@@ -133,13 +143,21 @@ const useStore = create<TodoStore>((set, get) => ({
             console.error("Error fetching users:", error);
         }
     },
-    addUser: async (name, email) => {
+    addUser: async (name: string, email: string, roleIds: string[]) => {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('email', email);
-        const newUser = await createUser(formData as FormData);
-        if (newUser) {
-            set((state) => ({ users: [...state.users, newUser] }));
+        roleIds.forEach(roleId => formData.append('roles', roleId));
+
+        try {
+            const newUser = await createUser(formData as FormData);
+            if (newUser) {
+                set((state) => ({ users: [...state.users, newUser] }));
+            }
+            return newUser;
+        } catch (error) {
+            console.error("Error in addUser:", error);
+            throw error; 
         }
     },
     assignTodoToUser: async (todoId, userId) => {
@@ -158,6 +176,37 @@ const useStore = create<TodoStore>((set, get) => ({
             }));
         } catch (error) {
             console.error("Error deleting user:", error);
+        }
+    },
+    fetchRoles: async () => {
+        try {
+            const roles = await getAllRoles();
+            set({ roles });
+        } catch (error) {
+            console.error("Error fetching roles:", error);
+        }
+    },
+
+    addRole: async (name) => {
+        const formData = new FormData();
+        formData.append('name', name);
+        const newRole = await createRole(formData as FormData);
+        if (newRole) {
+            set((state) => ({ roles: [...state.roles, newRole] }));
+        }
+    },
+    updateUserRole: async (userId: string, roleId: string, roles: Role[]) => {
+        try {
+            const updatedUser = await updateUserRole(userId, roleId);
+            set((state) => ({
+                users: state.users.map(user =>
+                    user.id === userId
+                        ? { ...user, roles: [{ id: roleId, name: roles.find(r => r.id === roleId)?.name || '' }] }
+                        : user
+                )
+            }));
+        } catch (error) {
+            console.error("Error updating user role:", error);
         }
     },
 }));
