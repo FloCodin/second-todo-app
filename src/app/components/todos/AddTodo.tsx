@@ -18,12 +18,14 @@ const AddTodo = () => {
 
     return (
         <div>
+        <div>
             <Form action={handleSubmit}>
                 <div className="flex flex-row gap-3">
                     <Input name="input" type="text" placeholder="Add Todo Here..."/>
                     <Button type="submit" text="Add" bgColor="bg-blue-600"/>
                 </div>
             </Form>
+        </div>
         </div>
     );
 }

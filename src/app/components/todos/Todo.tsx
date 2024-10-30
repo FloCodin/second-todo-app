@@ -49,6 +49,7 @@ const Todo = ({todo}) => {
         <div>
 
 
+
             <tr className={`flex justify-between w-screen pl-4 pr-4`} style={todoStyle}>
 
                 <th className="border-b border-white" style={{width: "30%"}}>
