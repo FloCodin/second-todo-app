@@ -12,9 +12,17 @@ export default function Home() {
     const [userOrder, setUserOrder] = useState("");
 
     useEffect(() => {
-        fetchTodos(dateOrder, priorityOrder, userOrder);
-    }, [dateOrder, priorityOrder, userOrder, fetchTodos]);
+        const loadTodos = async () => {
+            try {
+                await fetchTodos(dateOrder, priorityOrder, userOrder);
+            } catch (error) {
+                console.error("Fehler beim Laden der Todos:", error);
+                alert("Ein Fehler ist aufgetreten. Bitte versuche es später erneut.");
+            }
+        };
 
+        loadTodos();
+    }, [dateOrder, priorityOrder, userOrder, fetchTodos]);
 
 
     return (

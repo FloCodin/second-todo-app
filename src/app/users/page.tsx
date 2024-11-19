@@ -4,25 +4,38 @@ import UserOverview from "@/app/components/users/UserOverview";
 import {useEffect} from "react";
 import useStore from "@/app/store";
 
+import { toast } from "react-toastify";
+
+
 
 export default function Page() {
 
-    const {users, todos, roles, fetchUsers, fetchTodos, fetchRoles} = useStore();
+    const {fetchUsers, fetchTodos, fetchRoles} = useStore();
 
     useEffect(() => {
         const initializeData = async () => {
             try {
-                await Promise.all(
-                    [fetchUsers(),
-                        fetchTodos("desc", "desc", "desc"),
-                        fetchRoles()]
-                )
+                await Promise.all([
+                    fetchUsers().catch((e) => {
+                        console.error("Fehler beim Laden der Benutzer:", e);
+                        toast.error("Benutzer konnten nicht geladen werden.");
+                    }),
+                    fetchTodos("desc", "desc", "desc").catch((e) => {
+                        console.error("Fehler beim Laden der Todos:", e);
+                        toast.error("Todos konnten nicht geladen werden.");
+                    }),
+                    fetchRoles().catch((e) => {
+                        console.error("Fehler beim Laden der Rollen:", e);
+                        toast.error("Rollen konnten nicht geladen werden.");
+                    })
+                ]);
             } catch (e) {
-                console.log(e)
+                console.error("Allgemeiner Fehler beim Initialisieren:", e);
             }
-        }
-        initializeData()
+        };
+        initializeData();
     }, [fetchRoles, fetchTodos, fetchUsers]);
+
 
     return (
         <div>

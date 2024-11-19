@@ -22,6 +22,7 @@ export async function createTodo(formData: FormData) {
     return newTodo;
 }
 
+
 interface Task {
     id: string;
     title: string;
