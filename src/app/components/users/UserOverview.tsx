@@ -1,13 +1,11 @@
 "use client"
-import { useEffect,  } from "react";
 import useStore from "@/app/store";
-import { deleteUser,  } from "@/actions/actions";
+import {deleteUser,} from "@/actions/actions";
 
 export default function UserOverview() {
-    const { users, todos, roles, fetchUsers, fetchTodos, fetchRoles } = useStore();
+    const {users, todos, roles, fetchUsers, fetchTodos, fetchRoles} = useStore();
 
-    useEffect(() => {
-    }, [fetchUsers, fetchTodos, fetchRoles, ]);
+
     const handleDeleteUser = async (userId: string) => {
         try {
             await deleteUser(userId);

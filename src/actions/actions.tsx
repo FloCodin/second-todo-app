@@ -106,26 +106,24 @@ export async function getAllToDos(dateOrder: string, priorityOrder: string, user
     let orderBy: Prisma.TodoOrderByWithRelationInput[] = [];
 
     if (dateOrder) {
-        orderBy.push({ createdAt: dateOrder as Prisma.SortOrder });
+        orderBy.push({createdAt: dateOrder as Prisma.SortOrder});
     }
     if (priorityOrder) {
-        orderBy.push({ priority: priorityOrder as Prisma.SortOrder });
+        orderBy.push({priority: priorityOrder as Prisma.SortOrder});
     }
     if (userOrder) {
-        orderBy.push({ user: { name: userOrder as Prisma.SortOrder } });
+        orderBy.push({user: {name: userOrder as Prisma.SortOrder}});
     }
 
-    const todos = await prisma.todo.findMany({
+    return prisma.todo.findMany({
         orderBy,
-        include: { user: true },
+        include: {user: true},
     });
-
-    return todos;
 }
 
 export async function getAllUsers() {
     return prisma.user.findMany({
-        include: { roles: true }
+        include: {roles: true}
     });
 }
 
@@ -144,10 +142,10 @@ export async function createUser(formData: FormData) {
                 email: email,
                 name: name,
                 roles: {
-                    connect: roles.map(roleId => ({ id: roleId }))
+                    connect: roles.map(roleId => ({id: roleId}))
                 }
             },
-            include: { roles: true } 
+            include: {roles: true}
         });
 
         revalidatePath("/");
@@ -159,16 +157,17 @@ export async function createUser(formData: FormData) {
         throw new Error("Failed to create user. Please try again.");
     }
 }
+
 export const assignTodoToUser = async (todoId: string, userId: string) => {
     return await prisma.todo.update({
-        where: { id: todoId },
-        data: { userId: userId },
+        where: {id: todoId},
+        data: {userId: userId},
     });
 };
 
 export async function deleteUser(userId: string) {
     await prisma.user.delete({
-        where: { id: userId },
+        where: {id: userId},
     });
     revalidatePath("/");
 }
@@ -195,16 +194,17 @@ export async function createRole(formData: FormData) {
 export async function getAllRoles() {
     return prisma.role.findMany();
 }
+
 export async function updateUserRole(userId: string, roleId: string) {
     try {
         const updatedUser = await prisma.user.update({
-            where: { id: userId },
+            where: {id: userId},
             data: {
                 roles: {
-                    set: [{ id: roleId }]
+                    set: [{id: roleId}]
                 }
             },
-            include: { roles: true }
+            include: {roles: true}
         });
 
         revalidatePath("/");

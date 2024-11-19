@@ -1,23 +1,20 @@
 "use client"
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useStore from "@/app/store";
 export default function CreateUser() {
     const [newUserName, setNewUserName] = useState("");
     const [newUserEmail, setNewUserEmail] = useState("");
     const [selectedRole, setSelectedRole] = useState<string>("");
-    const [userRoles, setUserRoles] = useState<{ [key: string]: string[] }>({});
-    const { users, todos, roles, addUser, fetchUsers, fetchTodos, fetchRoles } = useStore();
+    const [, setUserRoles] = useState<{ [key: string]: string[] }>({});
+    const { users, roles, addUser, fetchUsers,} = useStore();
 
     useEffect(() => {
-        fetchUsers();
-        fetchTodos("", "", "");
-        fetchRoles();
         const initialUserRoles = users.reduce((acc, user) => {
             acc[user.id] = user.roles.map(role => role.id);
             return acc;
         }, {});
         setUserRoles(initialUserRoles);
-    }, [fetchUsers, fetchTodos, fetchRoles, ]);
+    }, [users], );
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {

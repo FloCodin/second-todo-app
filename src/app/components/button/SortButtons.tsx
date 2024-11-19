@@ -29,47 +29,51 @@ export default function SortButtons() {
         setDateOrder("");
         setPriorityOrder("");
     };
-return (
-  <>
-      <div className="flex gap-4 mt-4">
-          <select
-              className="text-black"
-              onChange={handleDateOrderChange}
-              value={dateOrder}
-          >
-              <option value="">Sort by Date</option>
-              <option value="asc">Date Ascending</option>
-              <option value="desc">Date Descending</option>
-          </select>
+    return (
+        <>
+            <div className="flex gap-4 mt-4">
+                <select
+                    className="text-black"
+                    onChange={handleDateOrderChange}
+                    value={dateOrder}
+                >
+                    <option value="">Sort by Date</option>
+                    <option value="asc">Date Ascending</option>
+                    <option value="desc">Date Descending</option>
+                </select>
 
-          <select
-              className="text-black"
-              onChange={handlePriorityOrderChange}
-              value={priorityOrder}
-          >
-              <option value="">Sort by Priority</option>
-              <option value="asc">Priority Low to High</option>
-              <option value="desc">Priority High to Low</option>
-          </select>
+                <select
+                    className="text-black"
+                    onChange={handlePriorityOrderChange}
+                    value={priorityOrder}
+                >
+                    <option value="">Sort by Priority</option>
+                    <option value="asc">Priority Low to High</option>
+                    <option value="desc">Priority High to Low</option>
+                </select>
 
-          <select
-              className="text-black"
-              onChange={handleUserOrderChange}
-              value={userOrder}
-          >
-              <option value="">Sort by User</option>
-              <option value="asc">User A to Z</option>
-              <option value="desc">User Z to A</option>
-          </select>
-      </div>
+                <select
+                    className="text-black"
+                    onChange={handleUserOrderChange}
+                    value={userOrder}
+                >
+                    <option value="">Sort by User</option>
+                    <option value="asc">User A to Z</option>
+                    <option value="desc">User Z to A</option>
+                </select>
+            </div>
 
-      <tr className="flex justify-evenly w-full ">
-          <th className="pl-40  text-lg "> todo:</th>
-          <th className="pl-52 text-lg"> creation date:</th>
-          <th className="pl-40 text-lg"> priority:</th>
-          <th className="pl-52 text-lg"> actions:</th>
-          <th className="pl-40 text-lg"> assigned to:</th>
-      </tr>
-  </>
-);
+            <table>
+                <tbody>
+                <tr className="flex justify-evenly w-full ">
+                    <th className="pl-40  text-lg "> todo:</th>
+                    <th className="pl-52 text-lg"> creation date:</th>
+                    <th className="pl-40 text-lg"> priority:</th>
+                    <th className="pl-52 text-lg"> actions:</th>
+                    <th className="pl-40 text-lg"> assigned to:</th>
+                </tr>
+                </tbody>
+            </table>
+        </>
+    );
 }
