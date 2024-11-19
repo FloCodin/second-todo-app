@@ -21,14 +21,12 @@ export default function Home() {
         <div className="">
             <div className="flex justify-center flex-col items-center mt-24">
                 <AddTodo/>
-
                 <SortButtons/>
                 <div className="flex-col flex gap-2 justify-center mt-5 w-screen ">
                     {todos.map((todo) => (
                         <Todo key={todo.id} todo={todo}/>
                     ))}
             </div>
-
         </div>
         </div>
     );

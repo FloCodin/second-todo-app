@@ -17,7 +17,7 @@ export default function CreateUser() {
             return acc;
         }, {});
         setUserRoles(initialUserRoles);
-    }, [fetchUsers, fetchTodos, fetchRoles, users]);
+    }, [fetchUsers, fetchTodos, fetchRoles, ]);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {

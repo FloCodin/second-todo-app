@@ -195,20 +195,6 @@ const useStore = create<TodoStore>((set, get) => ({
             set((state) => ({ roles: [...state.roles, newRole] }));
         }
     },
-    updateUserRole: async (userId: string, roleId: string, roles: Role[]) => {
-        try {
-            const updatedUser = await updateUserRole(userId, roleId);
-            set((state) => ({
-                users: state.users.map(user =>
-                    user.id === userId
-                        ? { ...user, roles: [{ id: roleId, name: roles.find(r => r.id === roleId)?.name || '' }] }
-                        : user
-                )
-            }));
-        } catch (error) {
-            console.error("Error updating user role:", error);
-        }
-    },
 }));
 
 export default useStore;

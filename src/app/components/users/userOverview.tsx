@@ -7,11 +7,7 @@ export default function UserOverview() {
     const { users, todos, roles, fetchUsers, fetchTodos, fetchRoles } = useStore();
 
     useEffect(() => {
-        fetchUsers();
-        fetchTodos("", "", "");
-        fetchRoles();
-        console.log("Roles:", roles);
-    }, [fetchUsers, fetchTodos, fetchRoles, users]);
+    }, [fetchUsers, fetchTodos, fetchRoles, ]);
     const handleDeleteUser = async (userId: string) => {
         try {
             await deleteUser(userId);
