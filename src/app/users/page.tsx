@@ -1,5 +1,5 @@
-import CreateUser from "@/app/components/users/createUser";
-import UserOverview from "@/app/components/users/userOverview";
+import CreateUser from "@/app/components/users/CreateUser";
+import UserOverview from "@/app/components/users/UserOverview";
 
 
 
