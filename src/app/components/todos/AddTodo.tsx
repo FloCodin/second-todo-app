@@ -13,7 +13,7 @@ const AddTodo = ({ onTodoAdded }) => {
         const newTodo = await actions.createTodo(formData);
         if (newTodo) {
             await addTodo(newTodo);
-            onTodoAdded(newTodo); // Call the callback with the new todo
+            onTodoAdded(newTodo); // Call the callback with the new to-do
         }
     };
 
