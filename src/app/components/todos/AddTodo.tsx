@@ -1,21 +1,29 @@
-"use client"
+"use client";
 import Form from "@/app/components/form/Form";
 import Input from "@/app/components/inputField/Input";
 import Button from "@/app/components/button/Button";
 import * as actions from "@/actions/actions";
 import React from "react";
 import useStore from "@/app/store";
+import todoTitle from "@/app/components/todos/TodoTitle";
 
-const AddTodo = ({ onTodoAdded }) => {
+interface AddTodoProps {
+    onTodoAdded: (todo: any) => string; // You can replace `any` with the specific type of your `todo` object
+}
+
+const AddTodo: React.FC<AddTodoProps> = ({ onTodoAdded }) => {
     const addTodo = useStore((state) => state.addTodo);
 
     const handleSubmit = async (formData: FormData) => {
         const newTodo = await actions.createTodo(formData);
         if (newTodo) {
-            await addTodo(newTodo);
-            onTodoAdded(newTodo); // Call the callback with the new to-do
+            // Extract the title (or whatever string `addTodo` needs)
+            const todoTitle = todoTitle.title; // Ensure `title` exists in the `newTodo` object
+            await addTodo(todoTitle); // Pass the extracted string to `addTodo`
+            onTodoAdded(newTodo); // Call the callback with the full `newTodo` object
         }
     };
+
 
     return (
         <div>
@@ -27,6 +35,6 @@ const AddTodo = ({ onTodoAdded }) => {
             </Form>
         </div>
     );
-}
+};
 
 export default AddTodo;
