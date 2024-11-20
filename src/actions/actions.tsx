@@ -199,16 +199,17 @@ export async function getAllRoles() {
 export async function updateUserRole(userId: string, roleId: string) {
     try {
         const updatedUser = await prisma.user.update({
-            where: {id: userId},
+            where: { id: userId },
             data: {
                 roles: {
-                    set: [{id: roleId}]
+                    set: [{ id: roleId }]
                 }
             },
-            include: {roles: true}
+            include: { roles: true }
         });
 
         revalidatePath("/");
+        console.log("Updated user:", updatedUser); // Add this log
         return updatedUser;
     } catch (error) {
         console.error("Error updating user role:", error);

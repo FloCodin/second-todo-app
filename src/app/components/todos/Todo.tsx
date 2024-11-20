@@ -20,7 +20,7 @@ const Todo = ({todo}) => {
     };
 
     const todoPriorityStyle = todo.priority <= 1
-        ? 'border-amber-200 border-solid border-2'
+        ? 'border-emerald-200 border-solid border-2'
         : todo.priority <= 2
             ? 'border-amber-400 border-solid border-4'
             : todo.priority <= 3

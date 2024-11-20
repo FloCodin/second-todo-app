@@ -1,10 +1,15 @@
 "use client"
+import React, { useState, useEffect } from "react";
 import useStore from "@/app/store";
-import {deleteUser,} from "@/actions/actions";
+import { deleteUser, updateUserRole } from "@/actions/actions";
 
 export default function UserOverview() {
-    const {users, todos, roles, fetchUsers, fetchTodos, fetchRoles} = useStore();
+    const { users, todos, roles, fetchUsers, fetchTodos, fetchRoles } = useStore();
+    const [localUsers, setLocalUsers] = useState(users);
 
+    useEffect(() => {
+        setLocalUsers(users);
+    }, [users]);
 
     const handleDeleteUser = async (userId: string) => {
         try {
@@ -15,9 +20,24 @@ export default function UserOverview() {
         }
     };
 
+    const handleRoleChange = async (userId: string, newRoleId: string) => {
+        try {
+            const updatedUser = await updateUserRole(userId, newRoleId);
+            setLocalUsers(prevUsers =>
+                prevUsers.map(user =>
+                    user.id === userId ? { ...user, roles: [{ id: newRoleId }] } : user
+                )
+            );
+            await fetchUsers(); // This will update the global state
+        } catch (error) {
+            console.error("Error updating user role:", error);
+        }
+    };
+
     const getUserTodos = (userId: string) => {
         return todos.filter(todo => todo.userId === userId).map(todo => todo.title);
     };
+
 
     return (
         <div className="container mx-auto p-6 text-white">
@@ -35,7 +55,7 @@ export default function UserOverview() {
                         </tr>
                         </thead>
                         <tbody>
-                        {users.map(user => (
+                        {localUsers.map(user => (
                             <tr key={user.id} className="border-b">
                                 <td className="px-4 py-2">{user.name}</td>
                                 <td className="px-4 py-2">{user.email}</td>
@@ -49,6 +69,7 @@ export default function UserOverview() {
                                 <td className="px-4 py-2">
                                     <select
                                         value={user.roles[0]?.id || ''}
+                                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
                                         className="bg-gray-700 text-white rounded-md px-2 py-1"
                                     >
                                         <option value="">Select a role</option>
