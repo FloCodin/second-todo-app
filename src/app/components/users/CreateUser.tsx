@@ -1,12 +1,15 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import useStore from "@/app/store";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function CreateUser() {
     const [newUserName, setNewUserName] = useState("");
     const [newUserEmail, setNewUserEmail] = useState("");
     const [selectedRole, setSelectedRole] = useState<string>("");
     const [, setUserRoles] = useState<{ [key: string]: string[] }>({});
-    const { users, roles, addUser, fetchUsers,} = useStore();
+    const { users, roles, addUser, fetchUsers } = useStore();
 
     useEffect(() => {
         const initialUserRoles = users.reduce((acc, user) => {
@@ -14,7 +17,8 @@ export default function CreateUser() {
             return acc;
         }, {});
         setUserRoles(initialUserRoles);
-    }, [users], );
+    }, [users]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -27,20 +31,24 @@ export default function CreateUser() {
             setNewUserEmail("");
             setSelectedRole("");
             await fetchUsers();
+            toast.success("User created successfully!");
         } catch (error) {
             console.error("Error adding user:", error);
+            if (error instanceof Error && error.message.includes("email already exists")) {
+                toast.error("This email address is already in use. Please use a different email.");
+            } else {
+                toast.error("This email address is already in use. Please use a different email.");
+            }
         }
     };
+
     const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedRole(e.target.value);
     };
 
-
-
     return (
         <div className="container mx-auto p-6 text-white">
-
-
+            <ToastContainer />
             <div className="shadow-md rounded-lg p-6">
                 <h2 className="text-2xl font-bold mb-4 text-white">Create New User</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
