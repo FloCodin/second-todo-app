@@ -6,13 +6,14 @@ import * as actions from "@/actions/actions";
 import React from "react";
 import useStore from "@/app/store";
 
-const AddTodo = () => {
+const AddTodo = ({ onTodoAdded }) => {
     const addTodo = useStore((state) => state.addTodo);
 
     const handleSubmit = async (formData: FormData) => {
         const newTodo = await actions.createTodo(formData);
         if (newTodo) {
             await addTodo(newTodo);
+            onTodoAdded(newTodo); // Call the callback with the new todo
         }
     };
 
