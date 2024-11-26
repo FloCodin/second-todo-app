@@ -1,29 +1,33 @@
 //store.js
-import { create } from 'zustand'
+import {create} from 'zustand'
 import {
-    getAllToDos,
+    assignTodoToUser,
+    createRole,
     createTodo,
-    updateTodoCombined,
-    deleteTodo,
     createUser,
+    deleteTodo,
+    deleteUser as deleteUserAction,
+    getAllRoles,
+    getAllToDos,
     getAllUsers,
-    assignTodoToUser, createRole, getAllRoles,
+    updateTodoCombined,
 } from "@/actions/actions";
 import {User} from "@prisma/client";
-import { deleteUser as deleteUserAction } from '@/actions/actions';
 import addTodo from "@/app/components/todos/AddTodo";
 
- interface todoProps {
+interface todoProps {
     id: string;
     title: string | null;
     isCompleted: boolean;
     isPinned: boolean;
     createdAt: Date;
+    updatedAt: Date;
     priority: number;
     assignedToId?: string;
     assignedTo?: string;
-     userId?: string ;
+    userId?: string;
 }
+
 interface Role {
     id: string;
     name: string;
@@ -62,16 +66,16 @@ const useStore = create<TodoStore>((set, get) => ({
     todos: [] as todoProps[],
     users: [],
     roles: [],
-    setRoles: (roles) => set({ roles }),
-    setUsers: (users) => set({ users }),
-    setTodos: (todos) => set({ todos }),
+    setRoles: (roles) => set({roles}),
+    setUsers: (users) => set({users}),
+    setTodos: (todos) => set({todos}),
 
     addTodo: async (title) => {
         const formData = new FormData();
         formData.append('title', title);
         const newTodo = await createTodo(formData as FormData);
         if (newTodo) {
-            set((state) => ({ todos: [...state.todos, newTodo] }));
+            set((state) => ({todos: [...state.todos, newTodo]}));
         }
         await addTodo
     },
@@ -81,7 +85,7 @@ const useStore = create<TodoStore>((set, get) => ({
         const formData = new FormData();
         formData.append('inputId', id);
         await deleteTodo(formData as FormData);
-        set((state) => ({ todos: state.todos.filter(todo => todo.id !== id) }));
+        set((state) => ({todos: state.todos.filter(todo => todo.id !== id)}));
     },
 
     completeTodo: async (id) => {
@@ -95,7 +99,7 @@ const useStore = create<TodoStore>((set, get) => ({
             if (updatedTodo) {
                 set((state) => ({
                     todos: state.todos.map(t =>
-                        t.id === id ? { ...updatedTodo } : t
+                        t.id === id ? {...updatedTodo} : t
                     )
                 }));
             }
@@ -111,7 +115,7 @@ const useStore = create<TodoStore>((set, get) => ({
         if (updatedTodo) {
             set((state) => ({
                 todos: state.todos.map(todo =>
-                    todo.id === id ? { ...updatedTodo } : todo
+                    todo.id === id ? {...updatedTodo} : todo
                 )
             }));
         }
@@ -119,13 +123,13 @@ const useStore = create<TodoStore>((set, get) => ({
 
     changePriority: (id, newPriority) => set((state) => ({
         todos: state.todos.map(todo =>
-            todo.id === id ? { ...todo, priority: newPriority } : todo
+            todo.id === id ? {...todo, priority: newPriority} : todo
         )
     })),
 
     fetchTodos: async (dateOrder, priorityOrder, userOrder) => {
         const todos = await getAllToDos(dateOrder, priorityOrder, userOrder);
-        set({ todos });
+        set({todos});
     },
 
     togglePinned: async (id) => {
@@ -139,7 +143,7 @@ const useStore = create<TodoStore>((set, get) => ({
             if (updatedTodo) {
                 set((state) => ({
                     todos: state.todos.map(t =>
-                        t.id === id ? { ...updatedTodo, isPinned: !t.isPinned } : t
+                        t.id === id ? {...updatedTodo, isPinned: !t.isPinned} : t
                     ).sort((a, b) => Number(b.isPinned) - Number(a.isPinned))
                 }));
             }
@@ -149,34 +153,34 @@ const useStore = create<TodoStore>((set, get) => ({
     fetchUsers: async () => {
         try {
             const users = await getAllUsers();
-            set({ users: users as User[] });
+            set({users: users as User[]});
         } catch (error) {
             console.error("Error fetching users:", error);
         }
     },
-    addUser:  async (name: string, email: string, roleIds: string[]): Promise<User> => {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    roleIds.forEach(roleId => formData.append('roles', roleId));
+    addUser: async (name: string, email: string, roleIds: string[]): Promise<User> => {
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('email', email);
+        roleIds.forEach(roleId => formData.append('roles', roleId));
 
-    try {
-        const newUser  = await createUser (formData as FormData);
-        if (newUser ) {
-            set((state) => ({ users: [...state.users, newUser ] }));
-            return newUser ; // Make sure to return the new user object
+        try {
+            const newUser = await createUser(formData as FormData);
+            if (newUser) {
+                set((state) => ({users: [...state.users, newUser]}));
+                return newUser; // Make sure to return the new user object
+            }
+            throw new Error("Failed to create user");
+        } catch (error) {
+            console.error("Error in addUser :", error);
+            throw error; // Ensure to throw the error so it can be caught in handleSubmit
         }
-        throw new Error("Failed to create user");
-    } catch (error) {
-        console.error("Error in addUser :", error);
-        throw error; // Ensure to throw the error so it can be caught in handleSubmit
-    }
-},
+    },
     assignTodoToUser: async (todoId, userId) => {
         await assignTodoToUser(todoId, userId);
         set((state) => ({
             todos: state.todos.map(todo =>
-                todo.id === todoId ? { ...todo, userId: userId } : todo
+                todo.id === todoId ? {...todo, userId: userId} : todo
             ),
         }));
     },
@@ -193,7 +197,7 @@ const useStore = create<TodoStore>((set, get) => ({
     fetchRoles: async () => {
         try {
             const roles = await getAllRoles();
-            set({ roles });
+            set({roles});
         } catch (error) {
             console.error("Error fetching roles:", error);
         }
@@ -204,7 +208,7 @@ const useStore = create<TodoStore>((set, get) => ({
         formData.append('name', name);
         const newRole = await createRole(formData as FormData);
         if (newRole) {
-            set((state) => ({ roles: [...state.roles, newRole] }));
+            set((state) => ({roles: [...state.roles, newRole]}));
         }
     },
 }));
