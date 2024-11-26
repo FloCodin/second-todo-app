@@ -4,8 +4,9 @@ import Todo from "@/app/components/todos/Todo";
 import React, {useEffect, useState} from "react";
 import useStore from "@/app/store";
 import SortButtons from "@/app/components/button/SortButtons";
+import {todoProps} from "@/app/types/types";
 
-export default function Home() {
+export default function Home(props:todoProps) {
     const {todos, fetchTodos} = useStore();
     const [localTodos, setLocalTodos] = useState(todos);
     const [dateOrder, setDateOrder] = useState("desc");

@@ -13,12 +13,15 @@ import {User} from "@prisma/client";
 import { deleteUser as deleteUserAction } from '@/actions/actions';
 import addTodo from "@/app/components/todos/AddTodo";
 
-interface taskProps {
+ interface todoProps {
     id: string;
-    title: string;
-    priority: number;
+    title: string | null;
+    isCompleted: boolean;
     isPinned: boolean;
-    userId?: string;
+    createdAt: Date;
+    priority: number;
+    assignedToId?: string;
+    assignedTo?: string;
 }
 interface Role {
     id: string;
@@ -33,8 +36,8 @@ interface User {
 }
 
 interface TodoStore {
-    todos: taskProps[];
-    setTodos: (todos: taskProps[]) => void;
+    todos: todoProps[];
+    setTodos: (todos: todoProps[]) => void;
     completeTodo: (id: string) => Promise<void>;
     changePriority: (id: string, newPriority: number) => void;
     fetchTodos: (order: string, sortBy: string, userOrder: string) => Promise<void>;
