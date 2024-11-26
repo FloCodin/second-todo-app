@@ -5,10 +5,16 @@ import Button from "@/app/components/button/Button";
 import * as actions from "@/actions/actions";
 import React from "react";
 import useStore from "@/app/store";
-import todoTitle from "@/app/components/todos/TodoTitle";
+
+// Define a Todo interface
+interface Todo {
+    id: string; // Assuming todos have an id
+    title: string;
+    // Add other properties as needed
+}
 
 interface AddTodoProps {
-    onTodoAdded: (todo: any) => string; // You can replace `any` with the specific type of your `todo` object
+    onTodoAdded: (todo: Todo) => void; // Changed return type to void
 }
 
 const AddTodo: React.FC<AddTodoProps> = ({ onTodoAdded }) => {
@@ -16,13 +22,11 @@ const AddTodo: React.FC<AddTodoProps> = ({ onTodoAdded }) => {
 
     const handleSubmit = async (formData: FormData) => {
         const newTodo = await actions.createTodo(formData);
-        if (newTodo) {
-            const todoTitle = todoTitle.title; // Ensure `title` exists in the `newTodo` object
-            await addTodo(todoTitle); // Pass the extracted string to `addTodo`
-            onTodoAdded(newTodo); // Call the callback with the full `newTodo` object
+        if (newTodo && 'title' in newTodo) {
+            await addTodo(newTodo.title); // Pass the title string to addTodo
+            onTodoAdded(newTodo); // Call the callback with the full newTodo object
         }
     };
-
 
     return (
         <div>
