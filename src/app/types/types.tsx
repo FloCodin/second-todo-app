@@ -5,6 +5,7 @@ export interface inputProps{
     type: string;
     placeholder?: string;
     value?: string;
+    defaultValue?: string | null;
 }
 
 export interface formProps{
