@@ -5,18 +5,12 @@ import Button from "@/app/components/button/Button";
 import * as actions from "@/actions/actions";
 import React from "react";
 import useStore from "@/app/store";
+import {todoProps} from "@/app/types/types";
 
-// Define a Todo interface
-interface Todo {
-    id: string; // Assuming todos have an id
-    title: string;
-    // Add other properties as needed
-}
 
 interface AddTodoProps {
-    onTodoAdded: (todo: Todo) => void; // Changed return type to void
+    onTodoAdded: (newTodo: todoProps) => void; // Ensure this matches
 }
-
 const AddTodo: React.FC<AddTodoProps> = ({ onTodoAdded }) => {
     const addTodo = useStore((state) => state.addTodo);
 
