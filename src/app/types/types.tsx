@@ -25,9 +25,9 @@ export interface todoProps {
     id: string;
     title: string | null;
     isCompleted: boolean;
-    isPinned: boolean;
+    isPinned?: boolean;
     createdAt: Date;
-    updatedAt: Date;
+    updatedAt?: Date;
     priority: number;
     assignedToId?: string;
     assignedTo?: string;
@@ -39,4 +39,8 @@ export interface User {
     name: string;
     todos?: [];
     roles: { id: string }[];
+}
+export interface Role {
+    id: string;
+    name: string;
 }

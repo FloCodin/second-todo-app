@@ -1,4 +1,4 @@
-//store.js
+//store.ts
 import {create} from 'zustand'
 import {
     assignTodoToUser,
@@ -12,34 +12,8 @@ import {
     getAllUsers,
     updateTodoCombined,
 } from "@/actions/actions";
-
-
 import addTodo from "@/app/components/todos/AddTodo";
-
-interface todoProps {
-    id: string;
-    title: string | null;
-    isCompleted: boolean;
-    isPinned: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    priority: number;
-    assignedToId?: string;
-    assignedTo?: string;
-    userId?: string;
-}
-
-interface Role {
-    id: string;
-    name: string;
-}
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    roles: Role[];
-}
+import {todoProps, User, Role} from "@/app/types/types";
 
 interface TodoStore {
     todos: todoProps[];
