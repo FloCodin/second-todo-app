@@ -12,7 +12,8 @@ import {
     getAllUsers,
     updateTodoCombined,
 } from "@/actions/actions";
-import {User} from "@prisma/client";
+
+
 import addTodo from "@/app/components/todos/AddTodo";
 
 interface todoProps {
