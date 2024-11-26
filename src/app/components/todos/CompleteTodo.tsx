@@ -7,16 +7,21 @@ import { todoProps } from "@/app/types/types";
 import { FaCheck } from "react-icons/fa";
 import useStore from "@/app/store";
 
-const CompleteTodo = ({ todo }: { todo: todoProps }) => {
+interface CompleteTodoProps {
+    todo: todoProps;
+    className?: string; // Add this line to accept className
+}
+
+const CompleteTodo = ({ todo, className }: CompleteTodoProps) => {
     const toggleTodo = useStore((state) => state.completeTodo);
     const handleSubmit = async (formData: FormData) => {
-        formData.append("toggleCompleted", "true"); // Komplettierungs-Flag
+        formData.append("toggleCompleted", "true");
         await action.updateTodoCombined(formData);
         toggleTodo(todo.id);
     };
 
     return (
-        <Form action={handleSubmit}>
+        <Form action={handleSubmit} className={className}> {/* Apply className here */}
             <Input name="inputId" value={todo.id} type="hidden" />
             <Button
                 text={<FaCheck />}
