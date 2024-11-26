@@ -52,7 +52,7 @@ const TodoTitle = ({ todo }: { todo: todoProps }) => {
                     <input
                         ref={inputRef}
                         type="text"
-                        value={newTitle}
+                        value={newTitle ?? ""}
                         onChange={(e) => setNewTitle(e.target.value)}
                         placeholder={todo.title || ''}
                         onBlur={handleBlur}
