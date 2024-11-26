@@ -4,11 +4,11 @@ import Button from "@/app/components/button/Button";
 import { MdEdit } from "react-icons/md";
 import Form from "@/app/components/form/Form";
 import Input from "@/app/components/inputField/Input";
-import { taskProps } from "@/app/types/types";
+import { todoProps } from "@/app/types/types";
 import * as actions from "@/actions/actions";
 import useStore from "@/app/store";
 
-const EditTodo = ({ todo }: { todo: taskProps }) => {
+const EditTodo = ({ todo }: { todo: todoProps }) => {
     const [editTodoState, setEditTodoState] = useState(false);
     const editTodo = useStore((state) => state.editTodo);
 
