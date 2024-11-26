@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import CompleteTodo from "@/app/components/todos/CompleteTodo";
 import DeleteTodo from "@/app/components/todos/DeleteTodo";
 import TodoPriority from "@/app/components/todos/TodoPriority";
 import TodoTitle from "@/app/components/todos/TodoTitle";
 import useStore from "@/app/store";
+import { todoProps, User } from "@/app/types/types";
 
-
-const Todo = ({todo}) => {
-    const {users, assignTodoToUser, fetchUsers} = useStore((state) => ({
-        users: state.users,
+const Todo = ({ todo }: { todo: todoProps }) => {
+    const { users, assignTodoToUser, fetchUsers } = useStore((state) => ({
+        users: state.users as User[], // Ensure users are typed correctly
         assignTodoToUser: state.assignTodoToUser,
         fetchUsers: state.fetchUsers,
     }));
-    const [selectedUser, setSelectedUser] = useState(todo.userId || '');
+    const [selectedUser, setSelectedUser] = useState(todo.assignedToId || '');
 
     const todoStyle = {
         textDecoration: todo.isCompleted ? 'line-through' : 'none',
@@ -31,7 +31,7 @@ const Todo = ({todo}) => {
         ? new Date(todo.createdAt).toLocaleDateString('de-CH')
         : 'The date could not get optimized';
 
-    const handleUserChange = async (e) => {
+    const handleUserChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const userId = e.target.value;
         setSelectedUser(userId);
         await assignTodoToUser(todo.id, userId);
@@ -40,34 +40,24 @@ const Todo = ({todo}) => {
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
-    // <th> todo</th>
-    // <th> creation date</th>
-    // <th> priority</th>
-    // <th> actions</th>
-    // <th> assigned to</th>
+
     return (
         <div>
             <tr className={`flex justify-between w-screen pl-4 pr-4`} style={todoStyle}>
-
-                <th className="border-b border-white" style={{width: "30%"}}>
-                    <TodoTitle todo={todo}/>
+                <th className="border-b border-white" style={{ width: "30%" }}>
+                    <TodoTitle todo={todo} />
                 </th>
-                <th className="border-b border-white" style={{width: "10%"}}>
+                <th className="border-b border-white" style={{ width: "10%" }}>
                     {formattedDate}
                 </th>
-                <th className=
-                        {`${todoPriorityStyle} border-amber-400 border border-solid items-center 
-                     ${todo.isPinned ? 'bg-yellow-100 text-black' : ''}`}
-                    style={{width: "15.5%"}}>
-                    <TodoPriority todo={todo}/>
+                <th className={`${todoPriorityStyle} ${todo.isPinned ? 'bg-yellow-100 text-black' : ''}`} style={{ width: "15.5%" }}>
+                    <TodoPriority todo={todo} />
                 </th>
-                <th className="border-b border-white flex justify-center" style={{width: "10%"}}>
-                    <CompleteTodo todo={todo} className="pr-4"/>
-
-                    <DeleteTodo todo={todo}/>
+                <th className="border-b border-white flex justify-center" style={{ width: "10%" }}>
+                    <CompleteTodo todo={todo} className="pr-4" />
+                    <DeleteTodo todo={todo} />
                 </th>
-
-                <th className="border-b border-white text-black" style={{width: "10%"}}>
+                <th className="border-b border-white text-black" style={{ width: "10%" }}>
                     <select value={selectedUser} onChange={handleUserChange} className="bg-gray-500">
                         <option value="">Select User</option>
                         {users.map((user) => (
@@ -77,8 +67,7 @@ const Todo = ({todo}) => {
                 </th>
             </tr>
         </div>
-    )
-        ;
+    );
 };
 
 export default Todo;
