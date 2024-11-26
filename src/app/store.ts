@@ -7,7 +7,7 @@ import {
     deleteTodo,
     createUser,
     getAllUsers,
-    assignTodoToUser, createRole, getAllRoles, updateUserRole
+    assignTodoToUser, createRole, getAllRoles,
 } from "@/actions/actions";
 import {User} from "@prisma/client";
 import { deleteUser as deleteUserAction } from '@/actions/actions';
@@ -160,11 +160,12 @@ const useStore = create<TodoStore>((set, get) => ({
             const newUser = await createUser(formData as FormData);
             if (newUser) {
                 set((state) => ({ users: [...state.users, newUser] }));
+                return newUser; // Return the new user object
             }
-            return newUser;
+            throw new Error("Failed to create user");
         } catch (error) {
             console.error("Error in addUser:", error);
-            throw error; 
+            throw error;
         }
     },
     assignTodoToUser: async (todoId, userId) => {

@@ -27,15 +27,17 @@ export default function CreateUser() {
         e.preventDefault();
         try {
             const newUser = await addUser(newUserName, newUserEmail, [selectedRole]);
-            setUserRoles(prev => ({
-                ...prev,
-                [newUser.id]: [selectedRole]
-            }));
-            setNewUserName("");
-            setNewUserEmail("");
-            setSelectedRole("");
-            await fetchUsers();
-            toast.success("User created successfully!");
+            if (newUser) {
+                setUserRoles(prev => ({
+                    ...prev,
+                    [newUser.id]: [selectedRole]
+                }));
+                setNewUserName("");
+                setNewUserEmail("");
+                setSelectedRole("");
+                await fetchUsers();
+                toast.success("User created successfully!");
+            }
         } catch (error) {
             console.error("Error adding user:", error);
             if (error instanceof Error && error.message.includes("email already exists")) {
