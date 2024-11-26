@@ -1,18 +1,22 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import useStore from "@/app/store";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+interface UserRoleMap {
+    [key: string]: string[];
+}
+
 export default function CreateUser() {
     const [newUserName, setNewUserName] = useState("");
     const [newUserEmail, setNewUserEmail] = useState("");
     const [selectedRole, setSelectedRole] = useState<string>("");
-    const [, setUserRoles] = useState<{ [key: string]: string[] }>({});
+    const [, setUserRoles] = useState<UserRoleMap>({});
     const { users, roles, addUser, fetchUsers } = useStore();
 
     useEffect(() => {
-        const initialUserRoles = users.reduce((acc, user) => {
+        const initialUserRoles = users.reduce((acc: UserRoleMap, user) => {
             acc[user.id] = user.roles.map(role => role.id);
             return acc;
         }, {});
@@ -37,7 +41,7 @@ export default function CreateUser() {
             if (error instanceof Error && error.message.includes("email already exists")) {
                 toast.error("This email address is already in use. Please use a different email.");
             } else {
-                toast.error("This email address is already in use. Please use a different email.");
+                toast.error("An unexpected error occurred.");
             }
         }
     };
