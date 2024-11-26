@@ -30,7 +30,7 @@ export interface todoProps {
     priority: number;
     assignedToId?: string;
     assignedTo?: string;
-    userId?: string;
+    userId?: string | null;
 }
 export interface User {
     id: string;
