@@ -150,7 +150,7 @@ const useStore = create<TodoStore>((set, get) => ({
             console.error("Error fetching users:", error);
         }
     },
-    addUser: async (name: string, email: string, roleIds: string[]) => {
+    addUser: async (name: string, email: string, roleIds: string[]): Promise<User> => {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('email', email);

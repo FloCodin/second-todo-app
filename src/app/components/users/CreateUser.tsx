@@ -27,24 +27,18 @@ export default function CreateUser() {
         e.preventDefault();
         try {
             const newUser = await addUser(newUserName, newUserEmail, [selectedRole]);
-            if (newUser) {
-                setUserRoles(prev => ({
-                    ...prev,
-                    [newUser.id]: [selectedRole]
-                }));
-                setNewUserName("");
-                setNewUserEmail("");
-                setSelectedRole("");
-                await fetchUsers();
-                toast.success("User created successfully!");
-            }
+            setUserRoles(prev => ({
+                ...prev,
+                [newUser.id]: [selectedRole]
+            }));
+            setNewUserName("");
+            setNewUserEmail("");
+            setSelectedRole("");
+            await fetchUsers();
+            toast.success("User created successfully!");
         } catch (error) {
             console.error("Error adding user:", error);
-            if (error instanceof Error && error.message.includes("email already exists")) {
-                toast.error("This email address is already in use. Please use a different email.");
-            } else {
-                toast.error("An unexpected error occurred.");
-            }
+            toast.error("An error occurred while creating the user.");
         }
     };
 
