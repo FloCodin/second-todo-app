@@ -27,6 +27,7 @@ export interface todoProps {
     isCompleted: boolean;
     isPinned: boolean;
     createdAt: Date;
+    updatedAt: Date;
     priority: number;
     assignedToId?: string;
     assignedTo?: string;
