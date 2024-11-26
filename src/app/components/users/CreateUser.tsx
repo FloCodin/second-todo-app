@@ -25,17 +25,24 @@ export default function CreateUser() {
     }, [users]);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         try {
             const newUser = await addUser(newUserName, newUserEmail, [selectedRole]);
-            setUserRoles(prev => ({
-                ...prev,
-                [newUser.id]: [selectedRole]
-            }));
-            setNewUserName("");
-            setNewUserEmail("");
-            setSelectedRole("");
-            await fetchUsers();
-            toast.success("User created successfully!");
+
+            if (newUser) {
+                setUserRoles(prev => ({
+                    ...prev,
+                    [newUser.id]: [selectedRole]
+                }));
+                setNewUserName("");
+                setNewUserEmail("");
+                setSelectedRole("");
+                await fetchUsers();
+                toast.success("User created successfully!");
+            } else {
+                console.error("User creation failed.");
+                toast.error("An error occurred while creating the user.");
+            }
         } catch (error) {
             console.error("Error adding user:", error);
             toast.error("An error occurred while creating the user.");

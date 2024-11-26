@@ -150,24 +150,24 @@ const useStore = create<TodoStore>((set, get) => ({
             console.error("Error fetching users:", error);
         }
     },
-    addUser: async (name: string, email: string, roleIds: string[]): Promise<User> => {
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('email', email);
-        roleIds.forEach(roleId => formData.append('roles', roleId));
+    addUser:  async (name: string, email: string, roleIds: string[]): Promise<User> => {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    roleIds.forEach(roleId => formData.append('roles', roleId));
 
-        try {
-            const newUser = await createUser(formData as FormData);
-            if (newUser) {
-                set((state) => ({ users: [...state.users, newUser] }));
-                return newUser; // Return the new user object
-            }
-            throw new Error("Failed to create user");
-        } catch (error) {
-            console.error("Error in addUser:", error);
-            throw error;
+    try {
+        const newUser  = await createUser (formData as FormData);
+        if (newUser ) {
+            set((state) => ({ users: [...state.users, newUser ] }));
+            return newUser ; // Make sure to return the new user object
         }
-    },
+        throw new Error("Failed to create user");
+    } catch (error) {
+        console.error("Error in addUser :", error);
+        throw error; // Ensure to throw the error so it can be caught in handleSubmit
+    }
+},
     assignTodoToUser: async (todoId, userId) => {
         await assignTodoToUser(todoId, userId);
         set((state) => ({
