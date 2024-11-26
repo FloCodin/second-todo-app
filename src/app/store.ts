@@ -25,6 +25,13 @@ interface Role {
     name: string;
 }
 
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    roles: Role[];
+}
+
 interface TodoStore {
     todos: taskProps[];
     setTodos: (todos: taskProps[]) => void;
@@ -138,7 +145,7 @@ const useStore = create<TodoStore>((set, get) => ({
     fetchUsers: async () => {
         try {
             const users = await getAllUsers();
-            set({ users });
+            set({ users: users as User[] });
         } catch (error) {
             console.error("Error fetching users:", error);
         }

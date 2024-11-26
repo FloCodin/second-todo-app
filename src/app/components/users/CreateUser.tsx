@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import useStore from "@/app/store";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {User} from "@/app/types/types";
 
 interface UserRoleMap {
     [key: string]: string[];
@@ -16,13 +17,12 @@ export default function CreateUser() {
     const { users, roles, addUser, fetchUsers } = useStore();
 
     useEffect(() => {
-        const initialUserRoles = users.reduce((acc: UserRoleMap, user) => {
+        const initialUserRoles = users.reduce((acc: UserRoleMap, user: User) => {
             acc[user.id] = user.roles.map(role => role.id);
             return acc;
         }, {});
         setUserRoles(initialUserRoles);
     }, [users]);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {

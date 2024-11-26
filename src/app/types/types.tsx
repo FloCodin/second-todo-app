@@ -36,4 +36,5 @@ export interface User {
     email: string;
     name: string;
     todos?: [];
+    roles: { id: string }[];
 }
