@@ -25,7 +25,7 @@ export default function UserOverview() {
             const updatedUser = await updateUserRole(userId, newRoleId);
             setLocalUsers(prevUsers =>
                 prevUsers.map(user =>
-                    user.id === userId ? { ...user, roles: [{ id: newRoleId }] } : user
+                    user.id === userId ? { ...user, roles: [{ id: newRoleId, name: '' }] } : user
                 )
             );
             await fetchUsers(); // This will update the global state
