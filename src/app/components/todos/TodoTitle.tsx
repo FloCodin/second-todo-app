@@ -1,21 +1,19 @@
-"use client"
-import React, {useState, useEffect, useRef} from "react";
+"use client";
+import React, { useState, useEffect, useRef } from "react";
 import Button from "@/app/components/button/Button";
 import useStore from "@/app/store";
 import { todoProps } from "@/app/types/types";
-import {IoIosSave} from "react-icons/io";
+import { IoIosSave } from "react-icons/io";
 
 const TodoTitle = ({ todo }: { todo: todoProps }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [newTitle, setNewTitle] = useState(todo.title);
+    const [newTitle, setNewTitle] = useState(todo.title || ""); // Ensure newTitle is always a string
     const editTodo = useStore((state) => state.editTodo);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-
-
     useEffect(() => {
         if (isEditing && inputRef.current) {
-            inputRef.current!.focus();
+            inputRef.current.focus(); // Safely focus the input
         }
     }, [isEditing]);
 
@@ -27,17 +25,13 @@ const TodoTitle = ({ todo }: { todo: todoProps }) => {
     };
 
     const handleBlur = async () => {
-        if (typeof newTitle === "string" && newTitle.trim() === "") {
+        if (newTitle.trim() === "") {
             alert("Title cannot be empty");
             return;
         }
 
         try {
-            if (typeof newTitle === 'string' && newTitle.trim() !== '') {
-                await editTodo(todo.id, newTitle.trim(), todo.priority);
-            } else {
-                alert("Title cannot be empty");
-            }
+            await editTodo(todo.id, newTitle.trim(), todo.priority);
         } catch (error) {
             console.error("Error updating todo:", error);
         } finally {
@@ -54,33 +48,32 @@ const TodoTitle = ({ todo }: { todo: todoProps }) => {
     return (
         <div className="flex gap-5 items-center justify-center">
             {isEditing ? (
-                    <div className="flex flex-row gap-2">
-                <input
-                    ref={inputRef}
-                    type="text"
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    placeholder={todo.title || ''}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
-                    required={true}
-                    className="border-b border-gray-300 focus:outline-none focus:border-blue-500 text-black px-2 py-1"
-                />
-                        <Button
-                            onClick={handleEdit}
-                            text={ <IoIosSave/> }
-                            bgColor="bg-blue-500"
-                            actionButton
-                        />
-                    </div>
+                <div className="flex flex-row gap-2">
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                        placeholder={todo.title || ''}
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        required={true}
+                        className="border-b border-gray-300 focus:outline-none focus:border-blue-500 text-black px-2 py-1"
+                    />
+                    <Button
+                        onClick={handleEdit}
+                        text={<IoIosSave />}
+                        bgColor="bg-blue-500"
+                        actionButton
+                    />
+                </div>
             ) : (
                 <span onClick={handleEdit} className="cursor-pointer">
                     {todo.title}
                 </span>
             )}
-
         </div>
-    )
-}
+    );
+};
 
 export default TodoTitle;
