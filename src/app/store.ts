@@ -59,7 +59,7 @@ interface TodoStore {
 }
 
 const useStore = create<TodoStore>((set, get) => ({
-    todos: [],
+    todos: [] as todoProps[],
     users: [],
     roles: [],
     setRoles: (roles) => set({ roles }),
