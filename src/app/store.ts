@@ -22,6 +22,7 @@ import addTodo from "@/app/components/todos/AddTodo";
     priority: number;
     assignedToId?: string;
     assignedTo?: string;
+    userId?: string;
 }
 interface Role {
     id: string;
