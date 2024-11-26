@@ -17,7 +17,6 @@ const AddTodo: React.FC<AddTodoProps> = ({ onTodoAdded }) => {
     const handleSubmit = async (formData: FormData) => {
         const newTodo = await actions.createTodo(formData);
         if (newTodo) {
-            // Extract the title (or whatever string `addTodo` needs)
             const todoTitle = todoTitle.title; // Ensure `title` exists in the `newTodo` object
             await addTodo(todoTitle); // Pass the extracted string to `addTodo`
             onTodoAdded(newTodo); // Call the callback with the full `newTodo` object
