@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import useStore from "@/app/store";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {User} from "@/app/types/types";
 
 interface UserRoleMap {
     [key: string]: string[];
@@ -17,35 +16,33 @@ export default function CreateUser() {
     const { users, roles, addUser, fetchUsers } = useStore();
 
     useEffect(() => {
-        const initialUserRoles = users.reduce((acc: UserRoleMap, user: User) => {
+        const initialUserRoles = users.reduce((acc: UserRoleMap, user) => {
             acc[user.id] = user.roles.map(role => role.id);
             return acc;
         }, {});
         setUserRoles(initialUserRoles);
     }, [users]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         try {
             const newUser = await addUser(newUserName, newUserEmail, [selectedRole]);
-
-            if (newUser) {
-                setUserRoles(prev => ({
-                    ...prev,
-                    [newUser.id]: [selectedRole]
-                }));
-                setNewUserName("");
-                setNewUserEmail("");
-                setSelectedRole("");
-                await fetchUsers();
-                toast.success("User created successfully!");
-            } else {
-                console.error("User creation failed.");
-                toast.error("An error occurred while creating the user.");
-            }
+            setUserRoles(prev => ({
+                ...prev,
+                [newUser]: [selectedRole]
+            }));
+            setNewUserName("");
+            setNewUserEmail("");
+            setSelectedRole("");
+            await fetchUsers();
+            toast.success("User created successfully!");
         } catch (error) {
             console.error("Error adding user:", error);
-            toast.error("An error occurred while creating the user.");
+            if (error instanceof Error && error.message.includes("email already exists")) {
+                toast.error("This email address is already in use. Please use a different email.");
+            } else {
+                toast.error("An unexpected error occurred.");
+            }
         }
     };
 
