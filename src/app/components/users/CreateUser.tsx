@@ -31,6 +31,7 @@ export default function CreateUser() {
                 ...prev,
                 [newUser?.id || ""]: [selectedRole]
             }));
+
             setNewUserName("");
             setNewUserEmail("");
             setSelectedRole("");
