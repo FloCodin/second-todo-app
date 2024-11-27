@@ -29,7 +29,7 @@ export default function CreateUser() {
             const newUser = await addUser(newUserName, newUserEmail, [selectedRole]);
             setUserRoles(prev => ({
                 ...prev,
-                [newUser ?? ""]: [selectedRole]
+                [newUser?.id || ""]: [selectedRole]
             }));
             setNewUserName("");
             setNewUserEmail("");
