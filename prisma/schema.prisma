@@ -4,40 +4,73 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// datasource db {
+//   provider     = "postgresql"
+//   url          = env("DATABASE_URL")
+//   relationMode = "prisma"
+// }
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider     = "postgresql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model Role {
-  id    String @id @default(cuid())
-  name  String @unique
-  users User[] @relation("User Roles")
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  name    String   @unique
+  users   User[]   @relation("User Roles", fields: [userIds], references: [id])
+  userIds String[] @db.ObjectId
 }
 
 model User {
-  id    String @id @default(cuid())
-  name  String
-  email String @unique
-  todos Todo[] @relation("User Todos")
-  roles Role[] @relation("User Roles")
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  email   String   @unique
+  todos   Todo[]   @relation("User Todos")
+  roles   Role[]   @relation("User Roles", fields: [roleIds], references: [id])
+  roleIds String[] @db.ObjectId
 }
 
 model Todo {
-  id          String   @id @default(cuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   isCompleted Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isPinned    Boolean  @default(false)
   priority    Int      @default(1)
-  userId      String?
+  userId      String?  @db.ObjectId
   user        User?    @relation("User Todos", fields: [userId], references: [id])
-
-  @@index([userId])
 }
+
+// model Role {
+//   id    String @id @default(cuid())
+//   name  String @unique
+//   users User[] @relation("User Roles")
+// }
+//
+// model User {
+//   id    String @id @default(cuid())
+//   name  String
+//   email String @unique
+//   todos Todo[] @relation("User Todos")
+//   roles Role[] @relation("User Roles")
+// }
+//
+// model Todo {
+//   id          String   @id @default(cuid())
+//   title       String
+//   isCompleted Boolean  @default(false)
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+//   isPinned    Boolean  @default(false)
+//   priority    Int      @default(1)
+//   userId      String?
+//   user        User?    @relation("User Todos", fields: [userId], references: [id])
+//
+//   @@index([userId])
+// }
