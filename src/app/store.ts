@@ -68,7 +68,7 @@ const useStore = create<TodoStore>((set, get) => ({
         if (todo) {
             const formData = new FormData();
             formData.append('inputId', id);
-            formData.append('newTitle', todo.title);
+            formData.append('newTitle', todo.title || ''); // Use empty string if title is null
             formData.append('prioritys', todo.priority.toString());
             const updatedTodo = await updateTodoCombined(formData as FormData);
             if (updatedTodo) {
@@ -112,7 +112,7 @@ const useStore = create<TodoStore>((set, get) => ({
         if (todo) {
             const formData = new FormData();
             formData.append('inputId', id);
-            formData.append('newTitle', todo.title);
+            formData.append('newTitle', todo.title || ''); // Use empty string if title is null
             formData.append('prioritys', todo.priority.toString());
             const updatedTodo = await updateTodoCombined(formData as FormData);
             if (updatedTodo) {
