@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import CompleteTodo from "@/app/components/todos/CompleteTodo";
 import DeleteTodo from "@/app/components/todos/DeleteTodo";
 import TodoPriority from "@/app/components/todos/TodoPriority";
 import TodoTitle from "@/app/components/todos/TodoTitle";
 import useStore from "@/app/store";
-import { todoProps, User } from "@/app/types/types";
+import {todoProps, User} from "@/app/types/types";
 
-const Todo = ({ todo }: { todo: todoProps }) => {
-    const { users, assignTodoToUser, fetchUsers } = useStore((state) => ({
+const Todo = ({todo}: { todo: todoProps }) => {
+    const {users, assignTodoToUser, fetchUsers} = useStore((state) => ({
         users: state.users as User[], // Ensure users are typed correctly
         assignTodoToUser: state.assignTodoToUser,
         fetchUsers: state.fetchUsers,
@@ -43,29 +43,34 @@ const Todo = ({ todo }: { todo: todoProps }) => {
 
     return (
         <div>
-            <tr className={`flex justify-between w-screen pl-4 pr-4`} style={todoStyle}>
-                <th className="border-b border-white" style={{ width: "30%" }}>
-                    <TodoTitle todo={todo} />
-                </th>
-                <th className="border-b border-white" style={{ width: "10%" }}>
-                    {formattedDate}
-                </th>
-                <th className={`${todoPriorityStyle} ${todo.isPinned ? 'bg-yellow-100 text-black' : ''}`} style={{ width: "15.5%" }}>
-                    <TodoPriority todo={todo} />
-                </th>
-                <th className="border-b border-white flex justify-center" style={{ width: "10%" }}>
-                    <CompleteTodo todo={todo} className="pr-4" />
-                    <DeleteTodo todo={todo} />
-                </th>
-                <th className="border-b border-white text-black" style={{ width: "10%" }}>
-                    <select value={selectedUser} onChange={handleUserChange} className="bg-gray-500">
-                        <option value="">Select User</option>
-                        {users.map((user) => (
-                            <option key={user.id} value={user.id}>{user.name}</option>
-                        ))}
-                    </select>
-                </th>
-            </tr>
+            <table>
+                <tbody>
+                <tr className={`flex justify-between w-screen pl-4 pr-4`} style={todoStyle}>
+                    <th className="border-b border-white" style={{width: "30%"}}>
+                        <TodoTitle todo={todo}/>
+                    </th>
+                    <th className="border-b border-white" style={{width: "10%"}}>
+                        {formattedDate}
+                    </th>
+                    <th className={`${todoPriorityStyle} ${todo.isPinned ? 'bg-yellow-100 text-black' : ''}`}
+                        style={{width: "15.5%"}}>
+                        <TodoPriority todo={todo}/>
+                    </th>
+                    <th className="border-b border-white flex justify-center" style={{width: "10%"}}>
+                        <CompleteTodo todo={todo} className="pr-4"/>
+                        <DeleteTodo todo={todo}/>
+                    </th>
+                    <th className="border-b border-white text-black" style={{width: "10%"}}>
+                        <select value={selectedUser} onChange={handleUserChange} className="bg-gray-500">
+                            <option value="">Select User</option>
+                            {users.map((user) => (
+                                <option key={user.id} value={user.id}>{user.name}</option>
+                            ))}
+                        </select>
+                    </th>
+                </tr>
+                </tbody>
+            </table>
         </div>
     );
 };

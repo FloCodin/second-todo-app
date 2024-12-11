@@ -7,9 +7,6 @@ const Form = ({ children, action, className, onSubmit }: formProps) => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default form submission
-
-
-
         ref.current?.reset();
     };
 

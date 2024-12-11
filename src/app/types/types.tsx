@@ -1,4 +1,5 @@
 import {ReactNode} from "react";
+import {Todo} from "@prisma/client";
 
 export interface inputProps{
     name: string;
@@ -33,14 +34,15 @@ export interface todoProps {
     assignedTo?: string;
     userId?: string | null;
 }
-export interface User {
-    id: string;
-    email: string;
-    name: string;
-    todos?: [];
-    roles: { id: string }[];
-}
 export interface Role {
     id: string;
     name: string;
+}
+
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    roles: Role[]; // Array of Role objects
+    todos?: Todo[]; // Optional todos
 }

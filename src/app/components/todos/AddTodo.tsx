@@ -23,11 +23,11 @@ const AddTodo: React.FC<AddTodoProps> = ({ onTodoAdded }) => {
                 title: newTodo.title,
                 isCompleted: false, // Default value
                 createdAt: new Date(), // Set current date or use newTodo.createdAt if available
-                updatedAt: new Date(), // Set current date or use newTodo.updatedAt if available
                 isPinned: false, // Default value
                 priority: 1, // Default priority or use newTodo.priority if available
                 userId: newTodo.userId || null // Ensure this aligns with your type definition
             };
+            addTodo
             onTodoAdded(formattedNewTodo); // Call the callback with the formatted newTodo object
         }
     };

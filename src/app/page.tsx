@@ -1,46 +1,38 @@
 "use client";
+
 import AddTodo from "@/app/components/todos/AddTodo";
 import Todo from "@/app/components/todos/Todo";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import useStore from "@/app/store";
 import SortButtons from "@/app/components/button/SortButtons";
-import { todoProps } from "@/app/types/types";
 
 export default function Home() {
-    const { todos, fetchTodos } = useStore();
-    const [localTodos, setLocalTodos] = useState<todoProps[]>(todos);
-    const [dateOrder, setDateOrder] = useState("desc");
-    const [priorityOrder, setPriorityOrder] = useState("desc");
-    const [userOrder, setUserOrder] = useState("");
+    const { todos, fetchTodos, addTodo } = useStore();
+    const [dateOrder, setDateOrder] = React.useState("desc");
+    const [priorityOrder, setPriorityOrder] = React.useState("desc");
+    const [userOrder, setUserOrder] = React.useState("");
 
     useEffect(() => {
-        const loadTodos = async () => {
-            try {
-                await fetchTodos(dateOrder, priorityOrder, userOrder);
-            } catch (error) {
-                console.error("Error loading todos:", error);
-                alert("An error occurred. Please try again later.");
-            }
-        };
-
-        loadTodos();
+        fetchTodos(dateOrder, priorityOrder, userOrder).catch((error) =>
+            console.error("Error fetching todos:", error)
+        );
     }, [dateOrder, priorityOrder, userOrder, fetchTodos]);
 
-    useEffect(() => {
-        setLocalTodos(todos);
-    }, [todos]);
-
-    const handleTodoAdded = (newTodo: todoProps) => {
-        setLocalTodos(prevTodos => [newTodo, ...prevTodos]);
+    const handleTodoAdded = async (title: string) => {
+        try {
+            await addTodo(title);
+        } catch (error) {
+            console.error("Error adding todo:", error);
+        }
     };
 
     return (
-        <div className="">
+        <div className="container mx-auto">
             <div className="flex justify-center flex-col items-center mt-24">
                 <AddTodo onTodoAdded={handleTodoAdded} />
                 <SortButtons />
-                <div className="flex-col flex gap-2 justify-center mt-5 w-screen ">
-                    {localTodos.map((todo) => (
+                <div className="flex-col flex gap-2 justify-center mt-5 w-screen">
+                    {todos.map((todo) => (
                         <Todo key={todo.id} todo={todo} />
                     ))}
                 </div>
