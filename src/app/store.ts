@@ -142,9 +142,10 @@ const useStore = create<TodoStore>((set, get) => ({
         roleIds.forEach(roleId => formData.append("roles", roleId));
 
         const newUser = await createUser(formData as FormData); // Rückgabe ist garantiert ein `User`
+        console.log("New User:", newUser);
 
         set((state) => ({ users: [...state.users, newUser] })); // State aktualisieren
-        return newUser;
+        return newUser as User;
     },
 
     assignTodoToUser: async (todoId, userId) => {

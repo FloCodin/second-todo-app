@@ -37,6 +37,12 @@ export default function CreateUser() {
                     [newUser.id]: [selectedRole],
                 }));
             }
+            if (newUser && typeof newUser === "object" && "id" in newUser) {
+                setUserRoles(prev => ({
+                    ...prev,
+                    [newUser.id]: [selectedRole],
+                }));
+            }
 
             setNewUserName("");
             setNewUserEmail("");
