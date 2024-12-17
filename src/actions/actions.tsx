@@ -2,25 +2,25 @@
 
 import {prisma} from "@/app/utils/prisma";
 import {revalidatePath} from "next/cache";
-import {Prisma} from '@prisma/client';
+import {Prisma, User} from '@prisma/client';
 
-export async function createTodo(formData: FormData) {
-    const input = formData.get('input');
+import { Todo } from "@prisma/client";
 
-    if (typeof input !== 'string' || !input.trim()) {
+export async function createTodo(formData: FormData): Promise<Todo | null> {
+    const input = formData.get("input");
+
+    if (typeof input !== "string" || !input.trim()) {
         return null;
     }
 
     const newTodo = await prisma.todo.create({
-        data: {
-            title: input.trim(),
-        },
+        data: { title: input.trim() },
     });
 
     revalidatePath("/");
-
     return newTodo;
 }
+
 
 interface Task {
     id: string;
@@ -127,35 +127,27 @@ export async function getAllUsers() {
     });
 }
 
-export async function createUser(formData: FormData) {
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const roles = formData.getAll('roles') as string[];
+export async function createUser(formData: FormData): Promise<User> {
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const roles = formData.getAll("roles") as string[];
 
     if (!name.trim() || !email.trim()) {
         throw new Error("Name and email are required");
     }
 
-    try {
-        const newUser = await prisma.user.create({
-            data: {
-                email: email,
-                name: name,
-                roles: {
-                    connect: roles.map(roleId => ({id: roleId}))
-                }
+    const newUser = await prisma.user.create({
+        data: {
+            email: email,
+            name: name,
+            roles: {
+                connect: roles.map(roleId => ({ id: roleId })),
             },
-            include: {roles: true}
-        });
+        },
+        include: { roles: true },
+    });
 
-        revalidatePath("/");
-
-        return newUser;
-
-    } catch (error) {
-        console.error("Error creating user:", error);
-        throw new Error("Failed to create user. Please try again.");
-    }
+    return newUser; // Prisma liefert ein `User`-Objekt zurück
 }
 
 export const assignTodoToUser = async (todoId: string, userId: string) => {

@@ -27,10 +27,13 @@ export default function CreateUser() {
         e.preventDefault();
         try {
             const newUser = await addUser(newUserName, newUserEmail, [selectedRole]);
+
+            // Sicherstellen, dass newUser.id existiert
             setUserRoles(prev => ({
                 ...prev,
-                [newUser?.id || ""]: [selectedRole]
+                [newUser.id]: [selectedRole], // TypeScript erkennt jetzt User.id korrekt
             }));
+
             setNewUserName("");
             setNewUserEmail("");
             setSelectedRole("");
@@ -38,13 +41,10 @@ export default function CreateUser() {
             toast.success("User created successfully!");
         } catch (error) {
             console.error("Error adding user:", error);
-            if (error instanceof Error && error.message.includes("email already exists")) {
-                toast.error("This email address is already in use. Please use a different email.");
-            } else {
-                toast.error("An unexpected error occurred.");
-            }
+            toast.error("Failed to create user. Please try again.");
         }
     };
+
 
     const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedRole(e.target.value);
