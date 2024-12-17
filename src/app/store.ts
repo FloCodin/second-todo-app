@@ -30,7 +30,7 @@ interface TodoStore {
     users: User[];
     setUsers: (users: User[]) => void;
     fetchUsers: () => Promise<void>;
-    addUser: (name: string, email: string, selectedRoles: string[]) => Promise<User>;
+    addUser: (name: string, email: string, selectedRoles: string[]) => Promise<PrismaUser>;
     assignTodoToUser: (todoId: string, userId: string) => Promise<void>;
     deleteUser: (userId: string) => Promise<void>;
     roles: Role[];
@@ -135,7 +135,7 @@ const useStore = create<TodoStore>((set, get) => ({
             console.error("Error fetching users:", error);
         }
     },
-    addUser: async (name: string, email: string, roleIds: string[]): Promise<User> => {
+    addUser: async (name: string, email: string, roleIds: string[]): Promise<PrismaUser> => {
         const formData = new FormData();
         formData.append("name", name);
         formData.append("email", email);
