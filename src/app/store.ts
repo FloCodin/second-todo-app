@@ -78,20 +78,14 @@ const useStore = create<TodoStore>((set, get) => ({
             formData.append('prioritys', todo.priority.toString());
             formData.append("toggleCompleted", "true"); // Hier liegt der Schlüssel!
             const updatedTodo = await updateTodoCombined(formData as FormData);
+
             if (updatedTodo) {
                 set((state) => ({
-                    todos: state.todos.map((t) =>
-                        t.id === id ? { ...t, isCompleted: updatedTodo.isCompleted } : t
-                    ),
+                    todos: state.todos.map(t =>
+                        t.id === id ? {...updatedTodo} : t
+                    )
                 }));
             }
-            // if (updatedTodo) {
-            //     set((state) => ({
-            //         todos: state.todos.map(t =>
-            //             t.id === id ? {...updatedTodo} : t
-            //         )
-            //     }));
-            // }
         }
     },
 
