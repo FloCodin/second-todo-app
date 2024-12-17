@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import useStore from "@/app/store";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {User} from "@prisma/client";
 
 interface UserRoleMap {
     [key: string]: string[];
@@ -26,12 +27,12 @@ export default function CreateUser() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const newUser = await addUser(newUserName, newUserEmail, [selectedRole]);
 
-            // Sicherstellen, dass newUser.id existiert
+            const newUser = await addUser(newUserName, newUserEmail, [selectedRole]) as User;
+
             setUserRoles(prev => ({
                 ...prev,
-                [newUser.id]: [selectedRole], // TypeScript erkennt jetzt User.id korrekt
+                [newUser.id]: [selectedRole],
             }));
 
             setNewUserName("");
