@@ -135,18 +135,17 @@ const useStore = create<TodoStore>((set, get) => ({
             console.error("Error fetching users:", error);
         }
     },
-    addUser: async (name: string, email: string, roleIds: string[]): Promise<PrismaUser> => {
+    addUser: async (name: string, email: string, roleIds: string[]): Promise<User> => {
         const formData = new FormData();
         formData.append("name", name);
         formData.append("email", email);
         roleIds.forEach(roleId => formData.append("roles", roleId));
 
-        const newUser = await createUser(formData as FormData); // Rückgabe ist garantiert ein `User`
-        console.log("New User:", newUser);
-
-        set((state) => ({ users: [...state.users, newUser] })); // State aktualisieren
-        return newUser as User;
+        const newUser = await createUser(formData as FormData);
+        set((state) => ({ users: [...state.users, newUser] }));
+        return newUser as User; // Typ hier explizit erzwingen
     },
+
 
     assignTodoToUser: async (todoId, userId) => {
         await assignTodoToUser(todoId, userId);
