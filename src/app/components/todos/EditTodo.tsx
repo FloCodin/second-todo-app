@@ -31,7 +31,7 @@ const EditTodo = ({ todo }: { todo: todoProps }) => {
         // Backend-Aktualisierung
         await actions.updateTodoCombined(formData);
         // Lokale Zustandsaktualisierung
-        editTodo(todo.id, newTitle, todo.priority);
+        await editTodo(todo.id, newTitle, todo.priority);
         setEditTodoState(false);
     };
 
@@ -40,7 +40,7 @@ const EditTodo = ({ todo }: { todo: todoProps }) => {
             <div className="flex gap-5 items-center">
                 <Button onClick={handleEdit} text={<MdEdit />} actionButton bgColor="bg-blue-500" />
                 {editTodoState ? (
-                    <Form action={handleSubmit}>
+                    <Form action={handleSubmit} onSubmit={}>
                         <Input name="inputId" value={todo.id} type="hidden" />
                         <div className="flex justify-center">
                             <Input
