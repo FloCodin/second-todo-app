@@ -142,7 +142,10 @@ const useStore = create<TodoStore>((set, get) => ({
         roleIds.forEach(roleId => formData.append("roles", roleId));
 
         const newUser = await createUser(formData as FormData);
-        set((state) => ({ users: [...state.users, newUser] }));
+        set((state) => ({
+            users: [...state.users, newUser as User],
+        }));
+
         return newUser as User; // Typ hier explizit erzwingen
     },
 

@@ -128,19 +128,22 @@ export async function getAllUsers() {
 }
 
 export async function createUser(formData: FormData): Promise<User> {
-        const newUser = await prisma.user.create({
-            data: {
-                name: formData.get("name") as string,
-                email: formData.get("email") as string,
-                roles: {
-                    connect: (formData.getAll("roles") as string[]).map(roleId => ({ id: roleId })),
-                },
+    const newUser = await prisma.user.create({
+        data: {
+            name: formData.get("name") as string,
+            email: formData.get("email") as string,
+            roles: {
+                connect: (formData.getAll("roles") as string[]).map(roleId => ({ id: roleId })),
             },
-            include: { roles: true },
-        });
+        },
+        include: { roles: true }, // Hier sicherstellen, dass Rollen inkludiert werden
 
-        return newUser; // Rückgabe des User-Objekts
-    }
+    });
+
+
+    return newUser; // Liefert vollständigen User inklusive Rollen
+}
+
 
 
     export const assignTodoToUser = async (todoId: string, userId: string) => {
