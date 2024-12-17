@@ -47,14 +47,18 @@ const useStore = create<TodoStore>((set, get) => ({
     setUsers: (users) => set({users}),
     setTodos: (todos) => set({todos}),
 
-    addTodo: async (title) => {
+    addTodo: async (title: string) => {
         const formData = new FormData();
-        formData.append('title', title);
-        const newTodo = await createTodo(formData as FormData);
+        formData.append("input", title);
+
+        const newTodo = await createTodo(formData as FormData); // Backend-Aufruf
+        console.log("New Todo from Backend:", newTodo);
+
         if (newTodo) {
-            set((state) => ({todos: [...state.todos, newTodo]}));
+            set((state) => ({
+                todos: [...state.todos, newTodo], // Neues Todo in den Zustand einfügen
+            }));
         }
-        await addTodo
     },
 
 

@@ -5,6 +5,7 @@ import TodoPriority from "@/app/components/todos/TodoPriority";
 import TodoTitle from "@/app/components/todos/TodoTitle";
 import useStore from "@/app/store";
 import {todoProps, User} from "@/app/types/types";
+import {valueOf} from "tailwindcss";
 
 const Todo = ({todo}: { todo: todoProps }) => {
     const {users, assignTodoToUser, fetchUsers} = useStore((state) => ({
@@ -61,12 +62,20 @@ const Todo = ({todo}: { todo: todoProps }) => {
                         <DeleteTodo todo={todo}/>
                     </th>
                     <th className="border-b border-white text-black" style={{width: "10%"}}>
-                        <select value={selectedUser} onChange={handleUserChange} className="bg-gray-500">
-                            <option value="select user">{}</option>
+                        <select
+                            value={selectedUser} // Der State steuert den Wert
+                            onChange={handleUserChange}
+                            className="bg-gray-500"
+                        >
+                            <option value="">Select User</option> {/* Default Option */}
                             {users.map((user) => (
-                                <option key={user.id} value={user.id}>{user.name}</option>
+                                <option key={user.id} value={user.id}>
+                                    {user.name}
+                                </option>
                             ))}
                         </select>
+
+
                     </th>
                 </tr>
                 </tbody>

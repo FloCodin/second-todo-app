@@ -1,21 +1,21 @@
 "use client";
-import { formProps } from "@/app/types/types";
 import React from "react";
 
-const Form = ({ children, className, onSubmit }: formProps) => {
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
+interface FormProps {
+    children: React.ReactNode;
+    className?: string;
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+}
 
-        console.log("FormData submitted:", Object.fromEntries(formData)); // Debugging FormData
-
-        if (onSubmit) {
-            await onSubmit(formData as FormData); // Direkt FormData weitergeben
-        }
-    };
-
+const Form: React.FC<FormProps> = ({ children, className, onSubmit }) => {
     return (
-        <form onSubmit={handleSubmit} className={className}>
+        <form
+            onSubmit={(e) => {
+                e.preventDefault(); // Standard-Formular-Verhalten verhindern
+                onSubmit(e); // Event weitergeben
+            }}
+            className={className}
+        >
             {children}
         </form>
     );

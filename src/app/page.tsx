@@ -5,6 +5,7 @@ import Todo from "@/app/components/todos/Todo";
 import React, { useEffect } from "react";
 import useStore from "@/app/store";
 import SortButtons from "@/app/components/button/SortButtons";
+import { toast } from "react-toastify";
 
 export default function Home() {
     const { todos, fetchTodos, addTodo } = useStore();
@@ -18,13 +19,22 @@ export default function Home() {
         );
     }, [dateOrder, priorityOrder, userOrder, fetchTodos]);
 
+
+
     const handleTodoAdded = async (title: string) => {
         try {
-            await addTodo(title);
+            if (title && title.trim()) {
+                await addTodo(title);
+                toast.success("Todo added successfully!"); // Erfolgsmeldung
+            } else {
+                toast.error("Todo cannot be empty!"); // Fehlermeldung
+            }
         } catch (error) {
             console.error("Error adding todo:", error);
+            toast.error("Something went wrong!");
         }
     };
+
 
     return (
         <div className="container mx-auto">

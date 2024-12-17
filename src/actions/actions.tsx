@@ -8,8 +8,11 @@ import { Todo } from "@prisma/client";
 
 export async function createTodo(formData: FormData): Promise<Todo | null> {
     const input = formData.get("input");
+    console.log("Input received in createTodo:", input); // Logge den Input
+
 
     if (typeof input !== "string" || !input.trim()) {
+        console.error("Invalid input:", input);
         return null;
     }
 
@@ -17,6 +20,7 @@ export async function createTodo(formData: FormData): Promise<Todo | null> {
         data: { title: input.trim() },
     });
 
+    console.log("New Todo created:", newTodo); // Backend-Log
     revalidatePath("/");
     return newTodo;
 }
