@@ -13,7 +13,9 @@ import {
     updateTodoCombined,
 } from "@/actions/actions";
 import addTodo from "@/app/components/todos/AddTodo";
-import {todoProps, User, Role} from "@/app/types/types";
+import {todoProps,User, Role} from "@/app/types/types";
+import {User as PrismaUser} from "@prisma/client";
+
 
 interface TodoStore {
     todos: todoProps[];
@@ -133,7 +135,7 @@ const useStore = create<TodoStore>((set, get) => ({
             console.error("Error fetching users:", error);
         }
     },
-    addUser: async (name: string, email: string, roleIds: string[]): Promise<User> => {
+    addUser: async (name: string, email: string, roleIds: string[]): Promise<PrismaUser> => {
         const formData = new FormData();
         formData.append("name", name);
         formData.append("email", email);
