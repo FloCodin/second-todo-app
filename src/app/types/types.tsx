@@ -24,7 +24,7 @@ export interface buttonProps {
 }
 export interface todoProps {
     id: string;
-    title: string | null;
+    title: string ;
     isCompleted: boolean;
     isPinned?: boolean;
     createdAt: Date;
