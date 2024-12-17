@@ -30,10 +30,13 @@ export default function CreateUser() {
 
             const newUser = await addUser(newUserName, newUserEmail, [selectedRole]) as User;
 
-            setUserRoles(prev => ({
-                ...prev,
-                [newUser.id]: [selectedRole],
-            }));
+            console.log("New User:", newUser); // Debugging
+            if (newUser && newUser.id) {
+                setUserRoles(prev => ({
+                    ...prev,
+                    [newUser.id]: [selectedRole],
+                }));
+            }
 
             setNewUserName("");
             setNewUserEmail("");

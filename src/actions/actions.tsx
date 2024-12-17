@@ -128,30 +128,23 @@ export async function getAllUsers() {
 }
 
 export async function createUser(formData: FormData): Promise<User> {
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const roles = formData.getAll("roles") as string[];
+        const newUser = await prisma.user.create({
+            data: {
+                name: formData.get("name") as string,
+                email: formData.get("email") as string,
+                roles: {
+                    connect: (formData.getAll("roles") as string[]).map(roleId => ({ id: roleId })),
+                },
+            },
+            include: { roles: true },
+        });
 
-    if (!name.trim() || !email.trim()) {
-        throw new Error("Name and email are required");
+        return newUser; // Rückgabe des User-Objekts
     }
 
-    const newUser = await prisma.user.create({
-        data: {
-            email: email,
-            name: name,
-            roles: {
-                connect: roles.map(roleId => ({ id: roleId })),
-            },
-        },
-        include: { roles: true },
-    });
 
-    return newUser; // Prisma liefert ein `User`-Objekt zurück
-}
-
-export const assignTodoToUser = async (todoId: string, userId: string) => {
-    return await prisma.todo.update({
+    export const assignTodoToUser = async (todoId: string, userId: string) => {
+    return prisma.todo.update({
         where: {id: todoId},
         data: {userId: userId},
     });
