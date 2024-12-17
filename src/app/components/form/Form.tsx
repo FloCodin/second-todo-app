@@ -1,21 +1,17 @@
 "use client";
 import { formProps } from "@/app/types/types";
-import { useRef } from "react";
+import React from "react";
 
-const Form = ({ children, action, className, onSubmit }: formProps) => {
-    const ref = useRef<HTMLFormElement>(null);
-
+const Form = ({ children, className, onSubmit }: formProps) => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); // Prevent default form submission
-        ref.current?.reset();
+        event.preventDefault(); // Verhindere Standard-Formular-Submission
+        if (onSubmit) {
+            onSubmit(event); // Rufe die übergebene `onSubmit`-Funktion auf
+        }
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            ref={ref}
-            className={className} // Apply className if provided
-        >
+        <form onSubmit={handleSubmit} className={className}>
             {children}
         </form>
     );

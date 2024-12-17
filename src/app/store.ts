@@ -12,10 +12,8 @@ import {
     getAllUsers,
     updateTodoCombined,
 } from "@/actions/actions";
+import addTodo from "@/app/components/todos/AddTodo";
 import {todoProps, User, Role} from "@/app/types/types";
-import {Prisma} from "@prisma/client";
-import {GetResult} from "prisma/prisma-client/runtime/library";
-import {DefaultArgs} from "@prisma/client/runtime/react-native";
 
 interface TodoStore {
     todos: todoProps[];
@@ -30,7 +28,7 @@ interface TodoStore {
     users: User[];
     setUsers: (users: User[]) => void;
     fetchUsers: () => Promise<void>;
-    addUser: (name: string, email: string, selectedRoles: string[]) => Promise<User>;
+    addUser: (name: string, email: string, selectedRoles: string[]) => Promise<void>;
     assignTodoToUser: (todoId: string, userId: string) => Promise<void>;
     deleteUser: (userId: string) => Promise<void>;
     roles: Role[];
@@ -47,17 +45,16 @@ const useStore = create<TodoStore>((set, get) => ({
     setUsers: (users) => set({users}),
     setTodos: (todos) => set({todos}),
 
-
-
-    addTodo: async (input) => {
+    addTodo: async (title) => {
         const formData = new FormData();
-        formData.append("input", input);
-
+        formData.append('title', title);
         const newTodo = await createTodo(formData as FormData);
         if (newTodo) {
-            set((state) => ({ todos: [newTodo, ...state.todos] }));
+            set((state) => ({todos: [...state.todos, newTodo]}));
         }
+        await addTodo
     },
+
 
     deleteTodo: async (id) => {
         const formData = new FormData();
@@ -107,7 +104,7 @@ const useStore = create<TodoStore>((set, get) => ({
 
     fetchTodos: async (dateOrder, priorityOrder, userOrder) => {
         const todos = await getAllToDos(dateOrder, priorityOrder, userOrder);
-        set({ todos });
+        set({todos});
     },
 
     togglePinned: async (id) => {
@@ -136,10 +133,7 @@ const useStore = create<TodoStore>((set, get) => ({
             console.error("Error fetching users:", error);
         }
     },
-    addUser: async (name: string, email: string, roleIds: string[]): Promise<Prisma.Prisma__UserClient<GetResult<Prisma.$UserPayload<DefaultArgs>, {
-        include: { roles: boolean };
-        data: { roles: { connect: { id: string }[] }; name: string; email: string }
-    }, "create">, never, DefaultArgs>> => {
+    addUser: async (name: string, email: string, roleIds: string[]): Promise<User> => {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('email', email);
@@ -154,7 +148,7 @@ const useStore = create<TodoStore>((set, get) => ({
             throw new Error("Failed to create user");
         } catch (error) {
             console.error("Error in addUser :", error);
-            throw error; // Ensure to throw the error, so it can be caught in handleSubmit
+            throw error; // Ensure to throw the error so it can be caught in handleSubmit
         }
     },
     assignTodoToUser: async (todoId, userId) => {

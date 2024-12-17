@@ -38,8 +38,6 @@ export default function UserOverview() {
         return todos.filter(todo => todo.userId === userId).map(todo => todo.title);
     };
 
-    console.log("Roles:", roles);
-
 
     return (
         <div className="container mx-auto p-6 text-white">
@@ -70,7 +68,7 @@ export default function UserOverview() {
                                 </td>
                                 <td className="px-4 py-2">
                                     <select
-                                        value={user.roles?.[0]?.id || ''}
+                                        value={user.roles[0]?.id || ''}
                                         onChange={(e) => handleRoleChange(user.id, e.target.value)}
                                         className="bg-gray-700 text-white rounded-md px-2 py-1"
                                     >
@@ -82,7 +80,6 @@ export default function UserOverview() {
                                         ))}
                                     </select>
                                 </td>
-
                                 <td className="px-4 py-2">
                                     <button
                                         onClick={() => handleDeleteUser(user.id)}

@@ -16,17 +16,11 @@ export default function CreateUser() {
     const { users, roles, addUser, fetchUsers } = useStore();
 
     useEffect(() => {
-        const initialUserRoles = (users || []).reduce((acc: UserRoleMap, user) => {
-            acc[user.id] = (user.roles?.map(role => role.id)) || [];
+        const initialUserRoles = users.reduce((acc: UserRoleMap, user) => {
+            acc[user.id] = user.roles.map(role => role.id);
             return acc;
         }, {});
         setUserRoles(initialUserRoles);
-    }, [users]);
-    useEffect(() => {
-        console.log("Fetched users:", users);
-        console.log("User roles mapping:");
-        users.forEach(user => console.log(user.id, user.roles));
-        // Process user roles
     }, [users]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -37,7 +31,6 @@ export default function CreateUser() {
                 ...prev,
                 [newUser?.id || ""]: [selectedRole]
             }));
-
             setNewUserName("");
             setNewUserEmail("");
             setSelectedRole("");

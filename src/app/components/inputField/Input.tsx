@@ -1,19 +1,20 @@
-import { inputProps } from "@/app/types/types";
+"use client";
+import React from "react";
 
-const Input = ({ name, type, placeholder, value, defaultValue }: inputProps) => {
-    return (
-        <div>
-            <input
-                name={name}
-                type={type}
-                placeholder={placeholder}
-                defaultValue={defaultValue ?? ""}
-                value={value}
-                required={true}
-                className="block w-full p-4 mx-2 border rounded-lg placeholder-gray-400 text-black"
-            />
-        </div>
-    )
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+    value?: string; // Optional für kontrollierte Inputs
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Event für Änderungen
 }
 
-export default Input
+const Input: React.FC<InputProps> = ({ value, onChange, ...rest }) => {
+    return (
+        <input
+            value={value} // Wird nur verwendet, wenn `value` übergeben wurde
+            onChange={onChange} // Änderungs-Handler
+            {...rest} // Weitergabe aller anderen Props
+            className="p-2 border rounded w-full text-black"
+        />
+    );
+};
+
+export default Input;

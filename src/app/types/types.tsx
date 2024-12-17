@@ -13,7 +13,7 @@ export interface formProps{
     children: ReactNode;
     action?: (formData: FormData)=> void;
     className?: string;
-    onSubmit?: () => void;
+    onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 export interface buttonProps {
     type?: "button" | "submit" | "reset"
