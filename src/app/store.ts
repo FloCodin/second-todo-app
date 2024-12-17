@@ -30,7 +30,7 @@ interface TodoStore {
     users: User[];
     setUsers: (users: User[]) => void;
     fetchUsers: () => Promise<void>;
-    addUser: (name: string, email: string, selectedRoles: string[]) => Promise<void>;
+    addUser: (name: string, email: string, selectedRoles: string[]) => Promise<User>;
     assignTodoToUser: (todoId: string, userId: string) => Promise<void>;
     deleteUser: (userId: string) => Promise<void>;
     roles: Role[];
