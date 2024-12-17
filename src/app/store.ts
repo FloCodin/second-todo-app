@@ -59,11 +59,15 @@ const useStore = create<TodoStore>((set, get) => ({
 
 
     deleteTodo: async (id) => {
+        console.log("Deleting Todo with ID:", id);
         const formData = new FormData();
-        formData.append('inputId', id);
+        formData.append("inputId", id);
         await deleteTodo(formData as FormData);
-        set((state) => ({todos: state.todos.filter(todo => todo.id !== id)}));
+        set((state) => ({ todos: state.todos.filter(todo => todo.id !== id) }));
+        console.log("Updated Todos:", get().todos);
     },
+
+
 
     completeTodo: async (id) => {
         const todo = get().todos.find(t => t.id === id);
@@ -72,14 +76,22 @@ const useStore = create<TodoStore>((set, get) => ({
             formData.append('inputId', id);
             formData.append('newTitle', todo.title || ''); // Use empty string if title is null
             formData.append('prioritys', todo.priority.toString());
+            formData.append("toggleCompleted", "true"); // Hier liegt der Schlüssel!
             const updatedTodo = await updateTodoCombined(formData as FormData);
             if (updatedTodo) {
                 set((state) => ({
-                    todos: state.todos.map(t =>
-                        t.id === id ? {...updatedTodo} : t
-                    )
+                    todos: state.todos.map((t) =>
+                        t.id === id ? { ...t, isCompleted: updatedTodo.isCompleted } : t
+                    ),
                 }));
             }
+            // if (updatedTodo) {
+            //     set((state) => ({
+            //         todos: state.todos.map(t =>
+            //             t.id === id ? {...updatedTodo} : t
+            //         )
+            //     }));
+            // }
         }
     },
 

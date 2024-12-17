@@ -11,9 +11,9 @@ export interface inputProps{
 
 export interface formProps{
     children: ReactNode;
-    action?: (formData: FormData)=> void;
+    action?: (formData: FormData) => void;
     className?: string;
-    onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
+    onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void; // Korrigiert
 }
 export interface buttonProps {
     type?: "button" | "submit" | "reset"

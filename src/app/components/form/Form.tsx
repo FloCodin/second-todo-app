@@ -3,10 +3,12 @@ import { formProps } from "@/app/types/types";
 import React from "react";
 
 const Form = ({ children, className, onSubmit }: formProps) => {
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); // Verhindere Standard-Formular-Submission
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        console.log("FormData submitted:", Object.fromEntries(formData)); // Debugging FormData
         if (onSubmit) {
-            onSubmit(event); // Rufe die übergebene `onSubmit`-Funktion auf
+            await onSubmit(formData as FormData);
         }
     };
 

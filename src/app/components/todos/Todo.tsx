@@ -62,7 +62,7 @@ const Todo = ({todo}: { todo: todoProps }) => {
                     </th>
                     <th className="border-b border-white text-black" style={{width: "10%"}}>
                         <select value={selectedUser} onChange={handleUserChange} className="bg-gray-500">
-                            <option value="">Select User</option>
+                            <option value="select user">{}</option>
                             {users.map((user) => (
                                 <option key={user.id} value={user.id}>{user.name}</option>
                             ))}

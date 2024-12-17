@@ -12,25 +12,28 @@ interface CompleteTodoProps {
     className?: string; // Add this line to accept className
 }
 
-const CompleteTodo = ({ todo, className }: CompleteTodoProps) => {
+const CompleteTodo = ({ todo }: CompleteTodoProps) => {
     const toggleTodo = useStore((state) => state.completeTodo);
+
     const handleSubmit = async (formData: FormData) => {
-        formData.append("toggleCompleted", "true");
-        await action.updateTodoCombined(formData);
-        toggleTodo(todo.id);
+        console.log("FormData in Complete:", Object.fromEntries(formData)); // Debugging FormData
+        const response = await action.updateTodoCombined(formData);
+        console.log("Update Response:", response); // Debug API-Antwort
+        await toggleTodo(todo.id);
     };
 
     return (
-        <Form action={handleSubmit} className={className}> {/* Apply className here */}
+        <Form onSubmit={handleSubmit}>
             <Input name="inputId" value={todo.id} type="hidden" />
             <Button
                 text={<FaCheck />}
                 type="submit"
                 actionButton
-                bgColor={todo.isCompleted ? 'bg-green-400' : 'bg-blue-500'}
+                bgColor={todo.isCompleted ? "bg-green-400" : "bg-blue-500"}
             />
         </Form>
     );
 };
+
 
 export default CompleteTodo;
