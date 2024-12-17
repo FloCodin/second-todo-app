@@ -28,7 +28,7 @@ export default function CreateUser() {
         e.preventDefault();
         try {
 
-            const newUser = await addUser(newUserName, newUserEmail, [selectedRole]) as User;
+            const newUser = await addUser(newUserName, newUserEmail, [selectedRole]) as unknown as User;
 
             console.log("New User:", newUser); // Debugging
             if (newUser && newUser.id) {
