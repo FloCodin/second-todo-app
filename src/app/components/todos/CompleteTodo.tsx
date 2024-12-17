@@ -22,7 +22,7 @@ const CompleteTodo = ({ todo }: CompleteTodoProps) => {
 
         try {
             // Backend-Aufruf zur Aktualisierung des Todos
-            const updatedTodo = await actions.updateTodoCombined(formData);
+            const updatedTodo = await actions.updateTodoCombined(formData as FormData);
             console.log("Updated Todo:", updatedTodo);
 
             // Zustand lokal aktualisieren
