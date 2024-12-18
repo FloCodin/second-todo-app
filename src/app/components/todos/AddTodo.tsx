@@ -41,7 +41,7 @@ const AddTodo: React.FC<AddTodoProps> = ({ onTodoAdded }) => {
 
     return (
         <div>
-            <ToastContainer />
+
             <Form onSubmit={handleSubmit}>
                 <div className="flex flex-row gap-3">
                     <Input

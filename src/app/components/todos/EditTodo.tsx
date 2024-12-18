@@ -40,7 +40,7 @@ const EditTodo = ({ todo }: { todo: todoProps }) => {
             <div className="flex gap-5 items-center">
                 <Button onClick={handleEdit} text={<MdEdit />} actionButton bgColor="bg-blue-500" />
                 {editTodoState ? (
-                    <Form action={handleSubmit} onSubmit={}>
+                    <Form onSubmit={handleSubmit}>
                         <Input name="inputId" value={todo.id} type="hidden" />
                         <div className="flex justify-center">
                             <Input
@@ -52,6 +52,7 @@ const EditTodo = ({ todo }: { todo: todoProps }) => {
                             <Button type="submit" text="Save" bgColor="bg-blue-500" />
                         </div>
                     </Form>
+
                 ) : null}
             </div>
         </>

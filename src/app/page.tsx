@@ -5,7 +5,7 @@ import Todo from "@/app/components/todos/Todo";
 import React, { useEffect } from "react";
 import useStore from "@/app/store";
 import SortButtons from "@/app/components/button/SortButtons";
-import { toast } from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 
 export default function Home() {
     const { todos, fetchTodos, addTodo } = useStore();
@@ -22,6 +22,7 @@ export default function Home() {
 
 
     const handleTodoAdded = async (title: string) => {
+
         try {
             if (title && title.trim()) {
                 await addTodo(title);
@@ -36,8 +37,11 @@ export default function Home() {
     };
 
 
+
     return (
         <div className="container mx-auto">
+            <ToastContainer
+            />
             <div className="flex justify-center flex-col items-center mt-24">
                 <AddTodo onTodoAdded={handleTodoAdded} />
                 <SortButtons />
