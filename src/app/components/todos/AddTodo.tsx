@@ -12,7 +12,7 @@ const AddTodo: React.FC = () => {
     const [inputValue, setInputValue] = useState("");
     const {addTodo} = useTodoStore((state) => state);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async () => {
 
         addTodo(inputValue).then(() => {
             setInputValue(""); // Input leeren
