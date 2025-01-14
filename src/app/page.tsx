@@ -9,7 +9,7 @@ import Todo from "@/app/components/todos/Todo";
 import Todo2 from "@/app/components/todos/Todo2";
 
 export default function Home() {
-    const {todos, error, completeTodo} = useTodoStore(
+    const {todos, error, } = useTodoStore(
         (state) => state
     );
 
