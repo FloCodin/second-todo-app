@@ -1,9 +1,9 @@
-import useStore from "@/app/store";
 import React, {useEffect, useState} from "react";
+import {useTodoStore} from "@/app/store-provider";
 
 
 export default function SortButtons() {
-    const {todos, fetchTodos} = useStore();
+    const { fetchTodos} = useTodoStore((state) => state)
     const [dateOrder, setDateOrder] = useState("desc");
     const [priorityOrder, setPriorityOrder] = useState("desc");
     const [userOrder, setUserOrder] = useState(""); // Neue State-Variable für Benutzer-Sortierung
@@ -62,18 +62,6 @@ export default function SortButtons() {
                     <option value="desc">User Z to A</option>
                 </select>
             </div>
-
-            <table>
-                <tbody>
-                <tr className="flex justify-evenly w-full ">
-                    <th className="pl-40  text-lg "> todo:</th>
-                    <th className="pl-52 text-lg"> creation date:</th>
-                    <th className="pl-40 text-lg"> priority:</th>
-                    <th className="pl-52 text-lg"> actions:</th>
-                    <th className="pl-40 text-lg"> assigned to:</th>
-                </tr>
-                </tbody>
-            </table>
         </>
     );
 }

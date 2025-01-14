@@ -1,14 +1,14 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Button from "@/app/components/button/Button";
-import useStore from "@/app/store";
-import { todoProps } from "@/app/types/types";
-import { IoIosSave } from "react-icons/io";
+import {TodoModel} from "@/app/types/types";
+import {IoIosSave} from "react-icons/io";
+import {useTodoStore} from "@/app/store-provider";
 
-const TodoTitle = ({ todo }: { todo: todoProps }) => {
+const TodoTitle = ({todo}: { todo: TodoModel }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [newTitle, setNewTitle] = useState(todo.title || ""); // Ensure newTitle is always a string
-    const editTodo = useStore((state) => state.editTodo);
+    const {editTodo} = useTodoStore((state) => state);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
@@ -62,7 +62,7 @@ const TodoTitle = ({ todo }: { todo: todoProps }) => {
                     />
                     <Button
                         onClick={handleEdit}
-                        text={<IoIosSave />}
+                        text={<IoIosSave/>}
                         bgColor="bg-blue-500"
                         actionButton
                     />

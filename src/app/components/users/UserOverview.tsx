@@ -1,10 +1,12 @@
 "use client"
-import React, { useState, useEffect } from "react";
-import useStore from "@/app/store";
-import { deleteUser, updateUserRole } from "@/actions/actions";
+import React, {useEffect, useState} from "react";
+import {deleteUser, updateUserRole} from "@/actions/actions";
+import {useTodoStore} from "@/app/store-provider";
 
 export default function UserOverview() {
-    const { users, todos, roles, fetchUsers, fetchTodos, fetchRoles } = useStore();
+    const {users, todos, roles, fetchUsers} = useTodoStore(
+        (state) => state
+    );
     const [localUsers, setLocalUsers] = useState(users);
 
     useEffect(() => {
@@ -25,7 +27,7 @@ export default function UserOverview() {
             const updatedUser = await updateUserRole(userId, newRoleId);
             setLocalUsers(prevUsers =>
                 prevUsers.map(user =>
-                    user.id === userId ? { ...user, roles: [{ id: newRoleId, name: '' }] } : user
+                    user.id === userId ? {...user, roles: [{id: newRoleId, name: ''}]} : user
                 )
             );
             await fetchUsers(); // This will update the global state

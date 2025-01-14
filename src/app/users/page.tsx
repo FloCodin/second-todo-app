@@ -2,15 +2,17 @@
 import CreateUser from "@/app/components/users/CreateUser";
 import UserOverview from "@/app/components/users/UserOverview";
 import {useEffect} from "react";
-import useStore from "@/app/store";
 
 import { toast } from "react-toastify";
+import {useTodoStore} from "@/app/store-provider";
 
 
 
 export default function Page() {
 
-    const {fetchUsers, fetchTodos, fetchRoles} = useStore();
+    const {fetchUsers, fetchTodos, fetchRoles} = useTodoStore(
+        (state) => state,
+    );
 
     useEffect(() => {
         const initializeData = async () => {

@@ -7,7 +7,7 @@ const Button = ({
                     onClick,
                     actionButton,
                     bgColor,
-                    ...props
+                    className
                 }:buttonProps) => {
     return(
         <div>

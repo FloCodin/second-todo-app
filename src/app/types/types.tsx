@@ -1,7 +1,6 @@
-import {ReactNode} from "react";
-import {Todo} from "@prisma/client";
+import React, {ReactNode} from "react";
 
-export interface inputProps{
+export interface inputProps {
     name: string;
     type: string;
     placeholder?: string;
@@ -9,22 +8,25 @@ export interface inputProps{
     defaultValue?: string | null;
 }
 
-export interface formProps{
+export interface formProps {
     children: ReactNode;
     action?: (formData: FormData) => void;
     className?: string;
     onSubmit?: (event: React.FormEvent<HTMLFormElement> | FormData) => void;
 }
+
 export interface buttonProps {
-    type?: "button" | "submit" | "reset"
-    text?: string | ReactNode
-    onClick?: ()=> void
-    actionButton?: boolean
-    bgColor?: string
+    type?: "button" | "submit" | "reset",
+    text?: string | ReactNode,
+    onClick?: () => void,
+    actionButton?: boolean,
+    bgColor?: string,
+    className?: { textDecoration: string; opacity: number }
 }
-export interface todoProps {
+
+export interface TodoModel {
     id: string;
-    title: string ;
+    title: string;
     isCompleted: boolean;
     isPinned?: boolean;
     createdAt: Date;
@@ -34,6 +36,7 @@ export interface todoProps {
     assignedTo?: string;
     userId?: string | null;
 }
+
 export interface Role {
     id: string;
     name: string;
@@ -44,5 +47,5 @@ export interface User {
     name: string;
     email: string;
     roles: Role[]; // Array of Role objects
-    todos?: Todo[]; // Optional todos
+    todos?: TodoModel[]; // Optional todos
 }

@@ -1,10 +1,10 @@
 "use client"
 import { useState, useEffect } from "react";
-import useStore from "@/app/store";
+import {useTodoStore} from "@/app/store-provider";
 
 export default function AddRole() {
     const [roleName, setRoleName] = useState("");
-    const { roles, fetchRoles, addRole } = useStore();
+    const { roles, fetchRoles, addRole } = useTodoStore((state) => state );
 
     useEffect(() => {
         fetchRoles();

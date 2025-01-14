@@ -1,56 +1,62 @@
 "use client";
 
+import React, {useEffect} from "react";
+import {useTodoStore} from "@/app/store-provider";
+import {toast} from "react-toastify";
 import AddTodo from "@/app/components/todos/AddTodo";
-import Todo from "@/app/components/todos/Todo";
-import React, { useEffect } from "react";
-import useStore from "@/app/store";
 import SortButtons from "@/app/components/button/SortButtons";
-import {toast, ToastContainer} from "react-toastify";
+import Todo from "@/app/components/todos/Todo";
+import Todo2 from "@/app/components/todos/Todo2";
 
 export default function Home() {
-    const { todos, fetchTodos, addTodo } = useStore();
-    const [dateOrder, setDateOrder] = React.useState("desc");
-    const [priorityOrder, setPriorityOrder] = React.useState("desc");
-    const [userOrder, setUserOrder] = React.useState("");
+    const {todos, error, completeTodo} = useTodoStore(
+        (state) => state
+    );
 
     useEffect(() => {
-        fetchTodos(dateOrder, priorityOrder, userOrder).catch((error) =>
-            console.error("Error fetching todos:", error)
-        );
-    }, [dateOrder, priorityOrder, userOrder, fetchTodos]);
-
-
-
-    const handleTodoAdded = async (title: string) => {
-
-        try {
-            if (title && title.trim()) {
-                await addTodo(title);
-                toast.success("Todo added successfully!"); // Erfolgsmeldung
-            } else {
-                toast.error("Todo cannot be empty!"); // Fehlermeldung
-            }
-        } catch (error) {
-            console.error("Error adding todo:", error);
-            toast.error("Something went wrong!");
-        }
-    };
-
-
+        toast(error) // reset the error when toast is not showing anymore
+    }, [error]);
 
     return (
-        <div className="container mx-auto">
-            <ToastContainer
-            />
-            <div className="flex justify-center flex-col items-center mt-24">
-                <AddTodo onTodoAdded={handleTodoAdded} />
-                <SortButtons />
-                <div className="flex-col flex gap-2 justify-center mt-5 w-screen">
-                    {todos.map((todo) => (
-                        <Todo key={todo.id} todo={todo} />
-                    ))}
+        <>
+            <div className="container mx-auto">
+                <div className="flex flex-col">
+                    <div>Add todo</div>
+                    <div>Sort Buttons</div>
+                    {
+                        todos.map(todo => {
+                            return (
+                                <Todo2 todo={todo} key={todo.id}/>
+                            )
+                        })
+                    }
+                </div>
+
+            </div>
+            <div className="container-fluid mx-auto">
+                <div className="flex justify-center flex-col items-center mt-24">
+                    <AddTodo/>
+                    <SortButtons/>
+
+                    <table className="m-8 w-full">
+                        <thead>
+                        <tr className="flex justify-evenly w-full pb-4">
+                            <th className="text-lg text-center"> todo:</th>
+                            <th className="text-lg text-center"> creation date:</th>
+                            <th className="text-lg text-center"> priority:</th>
+                            <th className="text-lg text-center"> actions:</th>
+                            <th className="text-lg text-center"> assigned to:</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {todos.map((todo) => (
+                            <Todo key={todo.id} todo={todo}/>
+                        ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
-    );
+        </>
+    )
+
 }

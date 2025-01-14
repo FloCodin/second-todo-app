@@ -3,31 +3,29 @@ import React from "react";
 import Form from "@/app/components/form/Form";
 import Button from "@/app/components/button/Button";
 import Input from "@/app/components/inputField/Input";
-import * as actions from "@/actions/actions";
-import useStore from "@/app/store";
+import  {TodoStore} from "@/app/store";
 import { FaCheck } from "react-icons/fa";
-import { todoProps } from "@/app/types/types";
+import { TodoModel } from "@/app/types/types";
+import {useTodoStore} from "@/app/store-provider";
 
 interface CompleteTodoProps {
-    todo: todoProps;
+    todo: TodoModel;
 }
 
 const CompleteTodo = ({ todo }: CompleteTodoProps) => {
-    const completeTodo = useStore((state) => state.completeTodo);
+    const completeTodo = useTodoStore((state:TodoStore) => state.completeTodo);
 
     const handleComplete = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const inputId = formData.get("inputId") as string;
+      //  const formData = new FormData(e.currentTarget);
 
         try {
             // Backend-Aufruf zur Aktualisierung des Todos
-            const updatedTodo = await actions.updateTodoCombined(formData as FormData);
-            console.log("Updated Todo:", updatedTodo);
+            console.log("Updated Todo:", );
 
             // Zustand lokal aktualisieren
-            if (updatedTodo) {
-                await completeTodo(inputId);
+            if (!todo.isCompleted) {
+                await completeTodo(todo.isCompleted);
             }
         } catch (error) {
             console.error("Error completing todo:", error);

@@ -1,13 +1,16 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { updateTodoCombined } from "@/actions/actions";
-import useStore from "@/app/store";
-import { todoProps } from "@/app/types/types";
+import {TodoStore} from "@/app/store";
+import {useTodoStore} from "@/app/store-provider";
+import { TodoModel } from "@/app/types/types";
 
-const TodoPriority = ({ todo }: { todo: todoProps }) => {
+
+
+const TodoPriority = ({ todo }: { todo: TodoModel }) => {
     const [priority, setPriority] = useState(todo.priority);
-    const updateTodoPriority = useStore((state) => state.changePriority);
-    const togglePinnedLocal = useStore((state) => state.togglePinned);
+    const updateTodoPriority = useTodoStore((state:TodoStore) => state.changePriority);
+    const togglePinnedLocal = useTodoStore((state: TodoStore) => state.togglePinned);
 
     const handlePriorityChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newPriority = parseInt(e.target.value, 10);

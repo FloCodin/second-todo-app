@@ -1,27 +1,13 @@
 "use server"
+import {Prisma, Todo, User} from '@prisma/client';
+import prisma from "@/app/utils/prisma";
 
-import {prisma} from "@/app/utils/prisma";
-import {revalidatePath} from "next/cache";
-import {Prisma, User} from '@prisma/client';
-
-import { Todo } from "@prisma/client";
-
-export async function createTodo(formData: FormData): Promise<Todo | null> {
-    const input = formData.get("input");
-    console.log("Input received in createTodo:", input); // Logge den Input
-
-
-    if (typeof input !== "string" || !input.trim()) {
-        console.error("Invalid input:", input);
-        return null;
-    }
-
+export async function createTodo(title: string): Promise<Todo | null> {
     const newTodo = await prisma.todo.create({
-        data: { title: input.trim() },
+        data: {title: title.trim()},
     });
 
     console.log("New Todo created:", newTodo); // Backend-Log
-    revalidatePath("/");
     return newTodo;
 }
 
@@ -79,7 +65,6 @@ export async function updateTodoCombined(formData: FormData) {
         },
     });
 
-    revalidatePath("/");
     return updatedTodo;
 }
 
@@ -88,6 +73,7 @@ export async function deleteTodo(formData: FormData) {
     const inputId = formData.get("inputId") as string;
 
     console.log("Trying to delete Todo with ID:", inputId);
+
 
     const todo = await prisma.todo.findUnique({
         where: {id: inputId}
@@ -102,12 +88,11 @@ export async function deleteTodo(formData: FormData) {
         where: {id: inputId}
     });
 
-    revalidatePath("/");
     return inputId;
 }
 
-export async function getAllToDos(dateOrder: string, priorityOrder: string, userOrder: string) {
-    let orderBy: Prisma.TodoOrderByWithRelationInput[] = [];
+export async function getAllToDos(dateOrder: string = "desc", priorityOrder: string = "desc", userOrder: string = "desc") {
+    const orderBy: Prisma.TodoOrderByWithRelationInput[] = [];
 
     if (dateOrder) {
         orderBy.push({createdAt: dateOrder as Prisma.SortOrder});
@@ -137,10 +122,10 @@ export async function createUser(formData: FormData): Promise<User> {
             name: formData.get("name") as string,
             email: formData.get("email") as string,
             roles: {
-                connect: (formData.getAll("roles") as string[]).map(roleId => ({ id: roleId })),
+                connect: (formData.getAll("roles") as string[]).map(roleId => ({id: roleId})),
             },
         },
-        include: { roles: true }, // Hier sicherstellen, dass Rollen inkludiert werden
+        include: {roles: true}, // Hier sicherstellen, dass Rollen inkludiert werden
 
     });
 
@@ -148,9 +133,22 @@ export async function createUser(formData: FormData): Promise<User> {
     return newUser; // Liefert vollständigen User inklusive Rollen
 }
 
+export const completeTodo = async (id: string, isCompleted: boolean) =>
+{
+    return prisma.todo.update({
+        where: {id: id},
+        data: {isCompleted: isCompleted}
+    })
+}
+export const updateTitle = async (id: string, newTitle: string) =>
+{
+    return prisma.todo.update({
+        where: {id: id},
+        data: {title: newTitle},
+    })
+}
 
-
-    export const assignTodoToUser = async (todoId: string, userId: string) => {
+export const assignTodoToUser = async (todoId: string, userId: string) => {
     return prisma.todo.update({
         where: {id: todoId},
         data: {userId: userId},
@@ -161,7 +159,6 @@ export async function deleteUser(userId: string) {
     await prisma.user.delete({
         where: {id: userId},
     });
-    revalidatePath("/");
 }
 
 export async function createRole(formData: FormData) {
@@ -175,7 +172,6 @@ export async function createRole(formData: FormData) {
                 name: name,
             },
         });
-        revalidatePath("/");
         return newRole;
     } catch (error) {
         console.error("Error creating role:", error);
@@ -199,7 +195,6 @@ export async function updateUserRole(userId: string, roleId: string) {
             include: {roles: true}
         });
 
-        revalidatePath("/");
         return updatedUser;
     } catch (error) {
         console.error("Error updating user role:", error);

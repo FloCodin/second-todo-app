@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import useStore from "@/app/store";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {User} from "@prisma/client";
+import {useTodoStore} from "@/app/store-provider";
 
 interface UserRoleMap {
     [key: string]: string[];
@@ -14,7 +14,9 @@ export default function CreateUser() {
     const [newUserEmail, setNewUserEmail] = useState("");
     const [selectedRole, setSelectedRole] = useState<string>("");
     const [, setUserRoles] = useState<UserRoleMap>({});
-    const { users, roles, addUser, fetchUsers } = useStore();
+    const { users, roles, addUser, fetchUsers } = useTodoStore(
+        (state) => state
+    );
 
     useEffect(() => {
         const initialUserRoles = users.reduce((acc: UserRoleMap, user) => {

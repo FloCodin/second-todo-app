@@ -1,14 +1,14 @@
 "use client"
-import {todoProps} from "@/app/types/types";
 import Form from "@/app/components/form/Form";
-import * as actions from "@/actions/actions";
-import Input from "@/app/components/inputField/Input";
 import Button from "@/app/components/button/Button";
 import {FaTrash} from "react-icons/fa";
-import useStore from "@/app/store";
+import {useTodoStore} from "@/app/store-provider";
+import React from "react";
+import {TodoModel} from "@/app/types/types";
 
-const DeleteTodo = ({ todo }: { todo: any }) => {
-    const deleteTodo = useStore((state) => state.deleteTodo);
+
+const DeleteTodo =  ({ todo }: { todo: TodoModel }) => {
+    const deleteTodo = useTodoStore((state) => state.deleteTodo);
 
     const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -21,8 +21,7 @@ const DeleteTodo = ({ todo }: { todo: any }) => {
         }
 
         try {
-            await actions.deleteTodo(formData as FormData);
-            deleteTodo(todo.id); // Zustand aktualisieren
+            await deleteTodo(todo.id); // Zustand aktualisieren
         } catch (error) {
             console.error("Error deleting todo:", error);
         }
