@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect, useState} from "react";
-import {deleteUser, updateUserRole} from "@/actions/actions";
+import {deleteUser,/* updateUserRole */ } from "@/actions/actions";
 import {useTodoStore} from "@/app/store-provider";
 
 export default function UserOverview() {
@@ -22,19 +22,19 @@ export default function UserOverview() {
         }
     };
 
-    const handleRoleChange = async (userId: string, newRoleId: string) => {
-        try {
-            const updatedUser = await updateUserRole(userId, newRoleId);
-            setLocalUsers(prevUsers =>
-                prevUsers.map(user =>
-                    user.id === userId ? {...user, roles: [{id: newRoleId, name: ''}]} : user
-                )
-            );
-            await fetchUsers(); // This will update the global state
-        } catch (error) {
-            console.error("Error updating user role:", error);
-        }
-    };
+    // const handleRoleChange = async (userId: string, newRoleId: string) => {
+    //     try {
+    //         // const updatedUser = await updateUserRole(userId, newRoleId);
+    //         // setLocalUsers(prevUsers =>
+    //         //     prevUsers.map(user =>
+    //         //         user.id === userId ? {...user, roles: [{id: newRoleId, name: ''}]} : user
+    //         //     )
+    //         // );
+    //         await fetchUsers(); // This will update the global state
+    //     } catch (error) {
+    //         console.error("Error updating user role:", error);
+    //     }
+    // };
 
     const getUserTodos = (userId: string) => {
         return todos.filter(todo => todo.userId === userId).map(todo => todo.title);
@@ -71,7 +71,7 @@ export default function UserOverview() {
                                 <td className="px-4 py-2">
                                     <select
                                         value={user.roles[0]?.id || ''}
-                                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                                        //onChange= {(e) => handleRoleChange(user.id, e.target.value)}
                                         className="bg-gray-700 text-white rounded-md px-2 py-1"
                                     >
                                         <option value="">Select a role</option>
