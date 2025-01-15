@@ -49,7 +49,6 @@ const Todo2 = ({todo}: { todo: TodoModel }) => {
             <p className="p-2">{formattedDate}</p>
             <p className="p-2">{JSON.stringify(todo?.updatedAt)}</p>
             <p className="p-2">{updatedDate}</p>
-            <p className="p-2">{todo.priority}</p>
 
             <div><Button
                 text={<FaCheck/>}
