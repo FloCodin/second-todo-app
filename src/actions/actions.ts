@@ -1,62 +1,98 @@
 "use server"
-import {Prisma, Todo, User} from '@prisma/client';
+import { Prisma, Todo, User } from "@prisma/client";
 import prisma from "@/app/utils/prisma";
+import { TodoModel } from "@/app/types/types";
 
 export async function createTodo(title: string): Promise<Todo | null> {
     const newTodo = await prisma.todo.create({
-        data: {title: title.trim()},
+        data: { title: title.trim() },
     });
 
-    console.log("New Todo created:", newTodo); // Backend-Log
+    console.log("New Todo created:", newTodo);
     return newTodo;
 }
 
-
-interface Task {
-    id: string;
-    title: string;
-    isCompleted: boolean;
-    priority: number;
-    isPinned: boolean;
+export async function updateTodoTitle(id: string, newTitle: string): Promise<Todo | null> {
+    if (!newTitle.trim()) {
+        console.error("Invalid title provided");
+        return null;
+    }
+    return prisma.todo.update({
+        where: { id },
+        data: { title: newTitle.trim() },
+    });
 }
 
-export async function updateTodoCombined(formData: FormData) {
-    const inputId = formData.get("inputId") as string;
+export async function updateTodoPriority(id: string, newPriority: number): Promise<Todo | null> {
+    if (newPriority < 1 || newPriority > 3) {
+        console.error("Priority must be between 1 and 3");
+        return null;
+    }
+    return prisma.todo.update({
+        where: { id },
+        data: { priority: newPriority },
+    });
+}
+
+export async function toggleTodoCompleted(id: string): Promise<Todo | null> {
+    const todo = await prisma.todo.findUnique({ where: { id } });
+    if (!todo) {
+        console.error("Todo not found");
+        return null;
+    }
+    return prisma.todo.update({
+        where: { id },
+        data: { isCompleted: !todo.isCompleted },
+    });
+}
+
+// Function to toggle the isPinned status of a Todo
+export async function toggleTodoPinned(id: string): Promise<Todo | null> {
+    const todo = await prisma.todo.findUnique({ where: { id } });
+    if (!todo) {
+        console.error("Todo not found");
+        return null;
+    }
+    return prisma.todo.update({
+        where: { id },
+        data: { isPinned: !todo.isPinned },
+    });
+}
+
+export async function updateTodoCombined(
+    id: string,
+    newTitle?: string,
+    newPriority?: number,
+    toggleCompleted?: boolean,
+    togglePinned?: boolean
+): Promise<Todo | null> {
     const todo = await prisma.todo.findUnique({
-        where: {id: inputId},
-    }) as Task | null;
+        where: { id },
+    }) as TodoModel | null;
 
     if (!todo) {
         console.error("Todo not found");
         return null;
     }
 
-    const newTitle = formData.get("newTitle") as string;
-    const newPriority: number = parseInt(formData.get("priority") as string, 10);
-
-    const toggleCompleted = formData.get("toggleCompleted") === "true";
-    const togglePinned = formData.get("togglePinned") === "true";
-
-    if (!isNaN(newPriority) && (newPriority >= 1 && newPriority <= 3)) {
-        todo.priority = newPriority; // Priorität wird nur geändert, wenn sie gültig ist
+    if (newPriority !== undefined && newPriority >= 1 && newPriority <= 3) {
+        todo.priority = newPriority;
     }
 
     if (newTitle && newTitle.trim() !== "") {
         todo.title = newTitle.trim();
     }
 
-    if (toggleCompleted) {
-        todo.isCompleted = !todo.isCompleted;
+    if (toggleCompleted !== undefined) {
+        todo.isCompleted = toggleCompleted;
     }
 
-    if (togglePinned) {
-        todo.isPinned = !todo.isPinned;
+    if (togglePinned !== undefined) {
+        todo.isPinned = togglePinned;
     }
 
     const updatedTodo = await prisma.todo.update({
-        where: {
-            id: inputId
-        },
+        where: { id },
         data: {
             title: todo.title,
             priority: todo.priority,
@@ -68,15 +104,9 @@ export async function updateTodoCombined(formData: FormData) {
     return updatedTodo;
 }
 
-
-export async function deleteTodo(formData: FormData) {
-    const inputId = formData.get("inputId") as string;
-
-    console.log("Trying to delete Todo with ID:", inputId);
-
-
+export async function deleteTodo(id: string): Promise<string | null> {
     const todo = await prisma.todo.findUnique({
-        where: {id: inputId}
+        where: { id },
     });
 
     if (!todo) {
@@ -85,91 +115,95 @@ export async function deleteTodo(formData: FormData) {
     }
 
     await prisma.todo.delete({
-        where: {id: inputId}
+        where: { id },
     });
 
-    return inputId;
+    return id;
 }
 
-export async function getAllToDos(dateOrder: string = "desc", priorityOrder: string = "desc", userOrder: string = "desc") {
+export async function getAllToDos(
+    dateOrder: string = "desc",
+    priorityOrder: string = "desc",
+    userOrder: string = "desc"
+) {
     const orderBy: Prisma.TodoOrderByWithRelationInput[] = [];
 
     if (dateOrder) {
-        orderBy.push({createdAt: dateOrder as Prisma.SortOrder});
+        orderBy.push({ createdAt: dateOrder as Prisma.SortOrder });
     }
     if (priorityOrder) {
-        orderBy.push({priority: priorityOrder as Prisma.SortOrder});
+        orderBy.push({ priority: priorityOrder as Prisma.SortOrder });
     }
     if (userOrder) {
-        orderBy.push({user: {name: userOrder as Prisma.SortOrder}});
+        orderBy.push({ user: { name: userOrder as Prisma.SortOrder } });
     }
 
     return prisma.todo.findMany({
         orderBy,
-        include: {user: true},
+        include: { user: true },
     });
 }
 
 export async function getAllUsers() {
     return prisma.user.findMany({
-        include: {roles: true}
+        include: { roles: true },
     });
 }
 
-export async function createUser(formData: FormData): Promise<User> {
+export async function createUser(
+    name: string,
+    email: string,
+    roleIds: string[]
+): Promise<User> {
     const newUser = await prisma.user.create({
         data: {
-            name: formData.get("name") as string,
-            email: formData.get("email") as string,
+            name,
+            email,
             roles: {
-                connect: (formData.getAll("roles") as string[]).map(roleId => ({id: roleId})),
+                connect: roleIds.map((roleId) => ({ id: roleId })),
             },
         },
-        include: {roles: true}, // Hier sicherstellen, dass Rollen inkludiert werden
-
+        include: { roles: true },
     });
 
-
-    return newUser; // Liefert vollständigen User inklusive Rollen
+    return newUser;
 }
 
-export const completeTodo = async (id: string, isCompleted: boolean) =>
-{
+export const completeTodo = async (id: string, isCompleted: boolean) => {
     return prisma.todo.update({
-        where: {id: id},
-        data: {isCompleted: isCompleted}
-    })
-}
-export const updateTitle = async (id: string, newTitle: string) =>
-{
+        where: { id },
+        data: { isCompleted },
+    });
+};
+
+export const updateTitle = async (id: string, newTitle: string) => {
     return prisma.todo.update({
-        where: {id: id},
-        data: {title: newTitle},
-    })
-}
+        where: { id },
+        data: { title: newTitle },
+    });
+};
 
 export const assignTodoToUser = async (todoId: string, userId: string) => {
     return prisma.todo.update({
-        where: {id: todoId},
-        data: {userId: userId},
+        where: { id: todoId },
+        data: { userId },
     });
 };
 
 export async function deleteUser(userId: string) {
     await prisma.user.delete({
-        where: {id: userId},
+        where: { id: userId },
     });
 }
 
-export async function createRole(formData: FormData) {
-    const name = formData.get('name') as string;
+export async function createRole(name: string) {
     if (!name.trim()) {
         return null;
     }
     try {
         const newRole = await prisma.role.create({
             data: {
-                name: name,
+                name,
             },
         });
         return newRole;
@@ -186,13 +220,13 @@ export async function getAllRoles() {
 export async function updateUserRole(userId: string, roleId: string) {
     try {
         const updatedUser = await prisma.user.update({
-            where: {id: userId},
+            where: { id: userId },
             data: {
                 roles: {
-                    set: [{id: roleId}]
-                }
+                    set: [{ id: roleId }],
+                },
             },
-            include: {roles: true}
+            include: { roles: true },
         });
 
         return updatedUser;

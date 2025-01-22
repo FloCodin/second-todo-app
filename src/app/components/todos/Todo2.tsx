@@ -1,10 +1,10 @@
-import {TodoModel} from "@/app/types/types";
+import {TodoModel, User} from "@/app/types/types";
 import Button from "@/app/components/button/Button";
 import {FaCheck, FaTrash} from "react-icons/fa";
 import React, {useState} from "react";
 import {useTodoStore} from "@/app/store-provider";
 
-const Todo2 = ({todo}: { todo: TodoModel }) => {
+const Todo2 = ({todo} : { todo: TodoModel, User: User }) => {
 
     const {
         completeTodo,
@@ -14,6 +14,8 @@ const Todo2 = ({todo}: { todo: TodoModel }) => {
         togglePinned,
     } = useTodoStore((state) => (state));
     const [title, setTitle] = useState(todo.title);
+    const {users, assignTodoToUser} = useTodoStore((state) => (state));
+    const [selectedUser, setSelectedUser] = useState(todo.assignedToId || '');
 
     const todoStyle = {
         textDecoration: todo.isCompleted ? 'line-through' : 'none',
@@ -22,7 +24,7 @@ const Todo2 = ({todo}: { todo: TodoModel }) => {
 
     const todoPriorityStyle = todo.priority <= 1
         ? 'border-emerald-200 border-solid border-2'
-        : todo.priority <= 2
+        : todo.priority  <= 2
             ? 'border-amber-400 border-solid border-4'
             : todo.priority <= 3
                 ? 'border-red-500 border-solid border-8'
@@ -36,6 +38,14 @@ const Todo2 = ({todo}: { todo: TodoModel }) => {
         ? new Date(todo.updatedAt).toLocaleDateString('de-CH')
         : 'The date could not get updated';
 
+    const handleUserChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const userId = e.target.value;
+        if (selectedUser !== userId) { // Vermeide redundante Updates
+            setSelectedUser(userId);
+            await assignTodoToUser(todo.id, userId);
+        }
+    };
+
     return (
         /* <div className="flex flex-row m-4 border" key={todo.id}>*/
 
@@ -43,7 +53,7 @@ const Todo2 = ({todo}: { todo: TodoModel }) => {
              key={todo.id} style={todoStyle}>
             <p className="p-2">{todo.id}</p>
             <input className="p-2 text-black" value={title} onChange={event => setTitle(event.target.value)}
-                   onBlur={() => editTitle(todo.id, title)}></input>
+                   onBlur={() => editTitle(todo.id, todo.title)}></input>
 
             <p className="p-2">{JSON.stringify(todo?.createdAt)}</p>
             <p className="p-2">{formattedDate}</p>
@@ -82,7 +92,22 @@ const Todo2 = ({todo}: { todo: TodoModel }) => {
             </div>
             <p className="p-2">{todo.assignedToId}</p>
             <p className="p-2">{todo.assignedTo}</p>
-            <p className="p-2">{todo.userId}</p>
+            {/*<p className="p-2">{todo.userId}</p>*/}
+            <div>
+                <select
+                    value={todo.UserName} // Der State steuert den Wert
+                    onChange={handleUserChange}
+                    className="bg-gray-500"
+                >
+                    <option value="">Select User</option>
+                    {/* Default Option */}
+                    {users.map((user) => (
+                        <option key={user.id} value={user.id}>
+                            {user.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
         </div>
     );

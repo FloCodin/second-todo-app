@@ -25,16 +25,18 @@ export interface buttonProps {
 }
 
 export interface TodoModel {
+    UserName?: string | readonly string[] | number | undefined;
     id: string;
-    title: string;
-    isCompleted: boolean;
+    title?: string;
+    isCompleted?: boolean;
     isPinned?: boolean;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt?: Date;
-    priority: number;
+    priority?: number;
     assignedToId?: string;
     assignedTo?: string;
     userId?: string | null;
+    userName?: string;
 }
 
 export interface Role {

@@ -4,6 +4,7 @@ import { updateTodoCombined } from "@/actions/actions";
 import {TodoStore} from "@/app/store";
 import {useTodoStore} from "@/app/store-provider";
 import { TodoModel } from "@/app/types/types";
+import {id} from "postcss-selector-parser";
 
 
 
@@ -20,7 +21,7 @@ const TodoPriority = ({ todo }: { todo: TodoModel }) => {
         formData.append("inputId", todo.id.toString());
         formData.append("priority", newPriority.toString());
 
-        await updateTodoCombined(formData as FormData);
+        await updateTodoCombined(id);
         updateTodoPriority(todo.id, newPriority);
     };
 
@@ -30,7 +31,7 @@ const TodoPriority = ({ todo }: { todo: TodoModel }) => {
         formData.append("inputId", todo.id);
         formData.append("togglePinned", "true"); // Pinned so wie es soll
 
-        await updateTodoCombined(formData as FormData);
+        await updateTodoCombined(id);
         togglePinnedLocal(todo.id);
     };
 
